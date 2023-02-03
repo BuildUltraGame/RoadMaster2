@@ -27,6 +27,13 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	ALandFormPawn* Spawner;
+
+	UFUNCTION(BlueprintCallable)
+	ALandFormPawn* GetStartLand();
+
+	//if need Initialize
+	UFUNCTION(BlueprintCallable)
+	virtual void InitUnitByType(ALandFormPawn* StartLand);
 	
 protected:
 	// Called when the game starts or when spawned

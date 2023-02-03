@@ -2,7 +2,7 @@
 
 
 #include "LandFormPawn.h"
-
+#include "RoadMaster2/Units/MovableUnits.h"
 #include "ShaderPrintParameters.h"
 
 // Sets default values
@@ -17,7 +17,8 @@ ALandFormPawn::ALandFormPawn()
 void ALandFormPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	UnitLauncher = CreateDefaultSubobject<UUnitLauncherComponent>(TEXT("UnitLauncher"));
+	UnitLauncher->LandFormOwner = this;
 }
 
 // Called every frame
@@ -42,5 +43,23 @@ FVector ALandFormPawn::GetWayPoint()
 	}
 	return FVector::Zero();
 }
+
+ALandFormPawn* ALandFormPawn::GetTargetPointByInput(AMovableUnits* ComingUnit)
+{
+	if (ComingUnit)
+	{
+		ALandFormPawn* From = ComingUnit->GetStartLand();
+		for (TMap<ALandFormPawn*, bool>::TConstIterator iter = NeighborMap.CreateConstIterator(); iter; ++iter)
+		{
+			if (iter->Key != From && iter->Value != false)
+			{
+				return iter->Key;
+			}
+		}
+		return From;
+	}
+	return nullptr;
+}
+
 
 

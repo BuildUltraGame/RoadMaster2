@@ -10,9 +10,10 @@ void UNavigationComponent::InitNavigator(AMovableUnits* Owner)
 	StartLand = OwnerUnit->Spawner;
 }
 
-void UNavigationComponent::Navigate(ALandFormPawn* Destination)
+void UNavigationComponent::Navigate(ALandFormPawn* Start,ALandFormPawn* Destination)
 {
 	EndLand = Destination;
+	StartLand = Start;
 	if (OwnerUnit)
 	{
 		if (IsValid(StartLand) && IsValid(EndLand))

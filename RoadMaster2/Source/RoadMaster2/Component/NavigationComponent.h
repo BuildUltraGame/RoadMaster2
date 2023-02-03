@@ -7,7 +7,7 @@
 #include "NavigationComponent.generated.h"
 
 /**
- * 
+ * Unit的导航模块，负责改变unit运动状态
  */
 UCLASS()
 class ROADMASTER2_API UNavigationComponent : public UActorComponent
@@ -27,5 +27,5 @@ public:
 	void InitNavigator(AMovableUnits* Owner);
 
 	UFUNCTION(BlueprintCallable)
-	void Navigate(ALandFormPawn* Destination);
+	void Navigate(ALandFormPawn* Start,ALandFormPawn* Destination);
 };

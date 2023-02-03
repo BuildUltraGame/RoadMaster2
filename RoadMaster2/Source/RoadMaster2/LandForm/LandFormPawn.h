@@ -7,6 +7,7 @@
 #include "RoadMaster2/Component/UnitLauncherComponent.h"
 #include "LandFormPawn.generated.h"
 
+class AMovableUnits;
 UCLASS()
 class ROADMASTER2_API ALandFormPawn : public APawn
 {
@@ -27,6 +28,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	USphereComponent* WayPoint;
+
+	UFUNCTION(BlueprintCallable)
+	ALandFormPawn* GetTargetPointByInput(AMovableUnits* ComingUnit);
 	
 protected:
 	// Called when the game starts or when spawned

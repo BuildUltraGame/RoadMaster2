@@ -7,6 +7,11 @@
 #include "UnitSpawnerComponent.generated.h"
 
 
+class ALandFormPawn;
+class AMovableUnits;
+/**
+ *  生成Unit的组件
+ */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ROADMASTER2_API UUnitSpawnerComponent : public USceneComponent
 {
@@ -15,6 +20,18 @@ class ROADMASTER2_API UUnitSpawnerComponent : public USceneComponent
 public:	
 	// Sets default values for this component's properties
 	UUnitSpawnerComponent();
+
+	UFUNCTION(BlueprintCallable,Server,Reliable)
+	void SpawnUnit_Server();
+
+	UFUNCTION(BlueprintCallable)
+	void ForceRefreshSpawnerNavigator(AMovableUnits* NewUnit);
+	
+	UPROPERTY(BlueprintReadWrite)
+	ALandFormPawn* LandFormOwner;
+
+	//UFUNCTION(BlueprintCallable,NetMulticast,Reliable)
+	//AMovableUnits* SpawnUnit_Multicast();
 
 protected:
 	// Called when the game starts
