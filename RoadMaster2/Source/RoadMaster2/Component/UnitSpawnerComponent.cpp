@@ -2,7 +2,7 @@
 
 
 #include "UnitSpawnerComponent.h"
-#include "RoadMaster2/Units/MovableUnits.h"
+#include "RoadMaster2/Pawns/Units/MovableUnits.h"
 
 // Sets default values for this component's properties
 UUnitSpawnerComponent::UUnitSpawnerComponent()

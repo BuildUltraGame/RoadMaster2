@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RoadMaster2/LandForm/LandFormPawn.h"
+#include "RoadMaster2/Pawns/LandForm/LandFormPawn.h"
 #include "NavigationComponent.generated.h"
 
 /**

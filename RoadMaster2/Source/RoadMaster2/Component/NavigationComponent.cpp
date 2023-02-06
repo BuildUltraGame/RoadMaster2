@@ -2,7 +2,7 @@
 
 
 #include "NavigationComponent.h"
-#include "RoadMaster2/Units/MovableUnits.h"
+#include "RoadMaster2/Pawns/Units/MovableUnits.h"
 
 void UNavigationComponent::InitNavigator(AMovableUnits* Owner)
 {
