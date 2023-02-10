@@ -13,5 +13,8 @@ UCLASS()
 class ROADMASTER2_API ALobbyPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+public:
+	UFUNCTION(BlueprintNativeEvent)
+	void StartSession();
 	
 };
