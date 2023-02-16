@@ -27,6 +27,8 @@ enum class EInGameSubState : uint8
 	End,
 };
 
+DECLARE_DYNAMIC_DELEGATE_OneParam(FOnGameStarted,EInGameSubState,OldState);
+
 
 /**
  * 
@@ -35,5 +37,34 @@ UCLASS()
 class ROADMASTER2_API AInBattleGameState : public AGameState
 {
 	GENERATED_BODY()
+public:
+	UPROPERTY(ReplicatedUsing = OnRep_InGameSubState,BlueprintReadWrite)
+	EInGameSubState InGameSubState;
+
+	UFUNCTION()
+	void OnRep_InGameSubState(EInGameSubState OldValue);
+
+	UPROPERTY(BlueprintReadWrite)
+	FOnGameStarted OnGameStartedDelegate;
+
+	UFUNCTION()
+	void GamePlayStart(EInGameSubState OldState);
+
+	UFUNCTION(BlueprintCallable)
+	void SetInGameSubState(EInGameSubState NewState);
+
+	//汇报联机状态，用以确认联机数量
+	UFUNCTION(Server,BlueprintCallable,Reliable)
+	void ReportConnectionInServer();
+
+	//初始化阶段的操作
+	UFUNCTION()
+	void DoInitialize();
+
+	//
 	
+protected:
+	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > &OutLifetimeProps) const override;
+
+	virtual void BeginPlay() override;
 };
