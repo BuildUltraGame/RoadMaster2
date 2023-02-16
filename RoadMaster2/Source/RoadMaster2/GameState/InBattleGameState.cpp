@@ -45,3 +45,7 @@ void AInBattleGameState::ReportConnectionInServer_Implementation()
 	
 }
 
+void AInBattleGameState::DoInitialize()
+{
+	
+}
