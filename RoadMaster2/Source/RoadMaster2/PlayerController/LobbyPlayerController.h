@@ -17,4 +17,6 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void StartSession();
 	
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere)
+	bool IsBusyBoxShowing = false;
 };
