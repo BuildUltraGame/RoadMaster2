@@ -3,3 +3,7 @@
 
 #include "LobbyGameMode.h"
 
+ALobbyGameMode::ALobbyGameMode()
+{
+	
+}
