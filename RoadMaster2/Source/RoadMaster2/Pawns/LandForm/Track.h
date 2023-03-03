@@ -13,5 +13,16 @@ UCLASS()
 class ROADMASTER2_API ATrack : public ALandFormPawn
 {
 	GENERATED_BODY()
+public:
+
+	ATrack();
 	
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category = "SplineLine")
+	class USplineComponent* SplineComponent;
+
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category = "SplineLine")
+	class UTimelineComponent* TimelineComponent;	
+
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category = "SplineLine")
+	TArray<AMovableUnits*> UnitList;
 };
