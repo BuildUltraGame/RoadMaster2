@@ -15,5 +15,7 @@ class ROADMASTER2_API ALobbyGameMode : public AGameModeBase
 	GENERATED_BODY()
 public:
 	ALobbyGameMode();
-	
+
+	UFUNCTION(BlueprintCallable)
+	void RepRoomInformation();
 };

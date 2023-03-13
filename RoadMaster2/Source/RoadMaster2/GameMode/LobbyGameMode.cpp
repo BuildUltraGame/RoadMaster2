@@ -7,3 +7,8 @@ ALobbyGameMode::ALobbyGameMode()
 {
 	
 }
+
+void ALobbyGameMode::RepRoomInformation()
+{
+	
+}

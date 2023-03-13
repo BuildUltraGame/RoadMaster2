@@ -14,8 +14,6 @@ class ROADMASTER2_API ALobbyPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 public:
-	UFUNCTION(BlueprintNativeEvent)
-	void StartSession();
 	
 	UPROPERTY(BlueprintReadWrite,VisibleAnywhere)
 	bool IsBusyBoxShowing = false;
