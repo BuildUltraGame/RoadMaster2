@@ -12,7 +12,23 @@
  */
 
 
-struct FPlayerConnectInformation;
+USTRUCT(BlueprintType)
+struct FPlayerConnectInformation
+{
+	GENERATED_BODY()
+	//玩家名字
+	UPROPERTY(BlueprintReadWrite)
+	FName PlayerName;
+	//延迟
+	UPROPERTY(BlueprintReadWrite)
+	int32 Ping;
+	//玩家是否是房主
+	UPROPERTY(BlueprintReadWrite)
+	bool IsOwner;
+	//编号
+	UPROPERTY(BlueprintReadWrite)
+	int32 index;
+};
 
 
 UCLASS()
@@ -25,7 +41,7 @@ public:
 	bool IsBusyBoxShowing = false;
 
 	UPROPERTY(ReplicatedUsing = OnRepRefreshRoom,BlueprintReadWrite)
-	TArray<struct FPlayerConnectInformation> RoomPlayerList;
+	TArray<FPlayerConnectInformation> RoomPlayerList;
 
 	UPROPERTY(ReplicatedUsing = OnGameMapIDChange,BlueprintReadWrite)
 	int32 GameMapID;

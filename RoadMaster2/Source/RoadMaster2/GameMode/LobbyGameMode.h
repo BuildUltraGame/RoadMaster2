@@ -6,23 +6,9 @@
 #include "GameFramework/GameMode.h"
 #include "LobbyGameMode.generated.h"
 
-USTRUCT(BlueprintType)
-struct FPlayerConnectInformation
-{
-	GENERATED_BODY()
-	//玩家名字
-	UPROPERTY(BlueprintReadWrite)
-	FName PlayerName;
-	//延迟
-	UPROPERTY(BlueprintReadWrite)
-	int32 Ping;
-	//玩家是否是房主
-	UPROPERTY(BlueprintReadWrite)
-	bool IsOwner;
-	//编号
-	UPROPERTY(BlueprintReadWrite)
-	int32 index;
-};
+
+
+struct FPlayerConnectInformation;
 
 
 /**
