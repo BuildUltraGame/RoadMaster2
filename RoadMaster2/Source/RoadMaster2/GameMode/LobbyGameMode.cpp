@@ -12,9 +12,7 @@ ALobbyGameMode::ALobbyGameMode()
 
 void ALobbyGameMode::RepRoomInformation(TArray<FPlayerConnectInformation> RoomList,int32 MapID)
 {
-	UWorld* World = GetWorld();
-	TArray<ALobbyPlayerController*> PlayerList;
-	
+	UWorld* World = GetWorld();	
 	for (TArray<TWeakObjectPtr<APlayerController> >::TConstIterator PCIterator = World->GetPlayerControllerIterator(); PCIterator; ++PCIterator)
 	{
 		ALobbyPlayerController* PC = static_cast<ALobbyPlayerController*>(PCIterator->Get());

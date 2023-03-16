@@ -21,3 +21,10 @@ void ALobbyPlayerController::OnGameMapIDChange()
 {
 	UpdateRoomUI();
 }
+
+bool ALobbyPlayerController::IsSelfPlayerController(APlayerController* PC)
+{
+	UWorld* World = GetWorld();
+	APlayerController* OwnPC = World->GetFirstPlayerController();
+	return  OwnPC == PC;
+}

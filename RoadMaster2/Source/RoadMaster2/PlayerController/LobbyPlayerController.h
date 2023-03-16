@@ -55,6 +55,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateRoomUI();
 
+	UFUNCTION(BlueprintCallable)
+	bool IsSelfPlayerController(APlayerController* PC);
 	
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > &OutLifetimeProps) const override;
