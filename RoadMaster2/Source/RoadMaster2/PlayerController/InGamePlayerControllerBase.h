@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "SimpleGamePlayerController.generated.h"
+#include "InGamePlayerControllerBase.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ROADMASTER2_API ASimpleGamePlayerController : public APlayerController
+class ROADMASTER2_API AInGamePlayerControllerBase : public APlayerController
 {
 	GENERATED_BODY()
 	
