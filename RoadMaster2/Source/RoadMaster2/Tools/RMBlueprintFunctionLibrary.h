@@ -16,4 +16,7 @@ class ROADMASTER2_API URMBlueprintFunctionLibrary : public UBlueprintFunctionLib
 public:
 	UFUNCTION(BlueprintCallable)
 	static void ShowLogInBlueprint(FString logs);
+
+	UFUNCTION(BlueprintCallable)
+	static void GetMapConfigByMapID(int32 MapID);
 };

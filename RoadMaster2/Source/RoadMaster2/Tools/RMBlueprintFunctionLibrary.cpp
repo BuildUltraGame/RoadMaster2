@@ -7,3 +7,8 @@ void URMBlueprintFunctionLibrary::ShowLogInBlueprint(FString logs)
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *logs);
 }
+
+void URMBlueprintFunctionLibrary::GetMapConfigByMapID(int32 MapID)
+{
+	
+}

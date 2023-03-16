@@ -37,7 +37,7 @@ TArray<ALobbyPlayerController*> ALobbyGameMode::GetPlayerControllerList()
 	{
 		APlayerController* PC = PCIterator->Get();
 		
-		if (PC && !PC->IsA(ALobbyPlayerController::StaticClass()))
+		if (PC&& PC->IsA<ALobbyPlayerController>()) 
 		{
 			PlayerList.Add(static_cast<ALobbyPlayerController*>(PC));
 		}
