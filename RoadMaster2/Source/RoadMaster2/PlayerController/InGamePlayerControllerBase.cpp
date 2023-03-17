@@ -3,3 +3,12 @@
 
 #include "InGamePlayerControllerBase.h"
 
+void AInGamePlayerControllerBase::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+}
+
+void AInGamePlayerControllerBase::BeginPlay()
+{
+	Super::BeginPlay();
+}
