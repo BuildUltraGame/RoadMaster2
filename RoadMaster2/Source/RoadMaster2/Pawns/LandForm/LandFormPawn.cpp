@@ -10,6 +10,9 @@ ALandFormPawn::ALandFormPawn()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	UnitLauncher = CreateDefaultSubobject<UUnitLauncherComponent>(TEXT("UnitLauncher"));
+	UnitLauncher->LandFormOwner = this;
+	UnitLauncher->SetupAttachment(RootComponent);
 
 }
 
@@ -17,8 +20,7 @@ ALandFormPawn::ALandFormPawn()
 void ALandFormPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	UnitLauncher = CreateDefaultSubobject<UUnitLauncherComponent>(TEXT("UnitLauncher"));
-	UnitLauncher->LandFormOwner = this;
+	
 }
 
 // Called every frame
