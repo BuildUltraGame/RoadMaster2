@@ -27,12 +27,19 @@ public:
 	
 	/** Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	class UInputAction* SetDestinationClickAction;
+	class UInputAction* HotKeyAction;
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	class UInputAction* SelectAction;
+	
 	virtual void SetupInputComponent() override;
 	
 	// To add mapping context
 	virtual void BeginPlay();
-	
+
+protected:
+	void OnHotKeyTriggered();
+	void OnSelectStarted();
+	void OnSelectTriggered();
+	void OnSelectReleased();
 };
