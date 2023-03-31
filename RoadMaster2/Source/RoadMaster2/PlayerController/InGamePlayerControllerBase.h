@@ -37,6 +37,8 @@ public:
 	// To add mapping context
 	virtual void BeginPlay();
 
+	AInGamePlayerControllerBase();
+	
 protected:
 	void OnHotKeyTriggered();
 	void OnSelectStarted();
