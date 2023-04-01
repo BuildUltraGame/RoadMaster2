@@ -2,6 +2,7 @@
 
 
 #include "InGameGameModeBase.h"
+#include "RoadMaster2/PlayerController/InGamePlayerControllerBase.h"
 
 void AInGameGameModeBase::PostInitializeComponents()
 {
@@ -39,6 +40,8 @@ APlayerController* AInGameGameModeBase::Login(UPlayer* NewPlayer, ENetRole InRem
 void AInGameGameModeBase::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
+	auto NewPC = static_cast<AInGamePlayerControllerBase*>(NewPlayer);
+	SetPlayerInformation(NewPC);
 }
 
 void AInGameGameModeBase::Logout(AController* Exiting)
@@ -69,4 +72,25 @@ bool AInGameGameModeBase::AllowCheats(APlayerController* P)
 void AInGameGameModeBase::UpdateGameplayMuteList(APlayerController* aPlayer)
 {
 	Super::UpdateGameplayMuteList(aPlayer);
+}
+
+TArray<AInGamePlayerControllerBase*> AInGameGameModeBase::GetPlayerControllerList()
+{
+	UWorld* World = GetWorld();
+	TArray<AInGamePlayerControllerBase*> PlayerList;
+	
+	for (TArray<TWeakObjectPtr<APlayerController> >::TConstIterator PCIterator = World->GetPlayerControllerIterator(); PCIterator; ++PCIterator)
+	{
+		APlayerController* PC = PCIterator->Get();
+		
+		if (PC&& PC->IsA<AInGamePlayerControllerBase>()) 
+		{
+			PlayerList.Add(static_cast<AInGamePlayerControllerBase*>(PC));
+		}
+	}
+	return PlayerList;
+}
+
+void AInGameGameModeBase::SetPlayerInformation(AInGamePlayerControllerBase* NewPC)
+{
 }

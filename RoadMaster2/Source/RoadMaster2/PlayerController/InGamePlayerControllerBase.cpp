@@ -34,7 +34,7 @@ void AInGamePlayerControllerBase::SetupInputComponent()
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
 	{
 		// 快捷键操作
-		EnhancedInputComponent->BindAction(HotKeyAction, ETriggerEvent::Triggered, this, &AInGamePlayerControllerBase::OnHotKeyTriggered);
+		EnhancedInputComponent->BindAction(HotKeyAction, ETriggerEvent::Started, this, &AInGamePlayerControllerBase::OnHotKeyTriggered);
 		// 选择操作
 		EnhancedInputComponent->BindAction(SelectAction, ETriggerEvent::Started, this, &AInGamePlayerControllerBase::OnSelectStarted);
 		EnhancedInputComponent->BindAction(SelectAction, ETriggerEvent::Triggered, this, &AInGamePlayerControllerBase::OnSelectTriggered);
@@ -65,5 +65,14 @@ void AInGamePlayerControllerBase::OnSelectTriggered()
 }
 
 void AInGamePlayerControllerBase::OnSelectReleased()
+{
+}
+
+AStartPoint* AInGamePlayerControllerBase::GetPlayerStartPoint()
+{
+	return nullptr;
+}
+
+void AInGamePlayerControllerBase::SetPlayerStartPoint()
 {
 }

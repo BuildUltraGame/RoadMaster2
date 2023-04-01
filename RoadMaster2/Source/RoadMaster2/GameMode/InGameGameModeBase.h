@@ -6,6 +6,7 @@
 #include "GameFramework/GameMode.h"
 #include "InGameGameModeBase.generated.h"
 
+class AInGamePlayerControllerBase;
 /**
  * 
  */
@@ -45,5 +46,9 @@ public:
 
 #pragma endregion <<< Override Functions
 	
-	
+	UFUNCTION(BlueprintCallable)
+	TArray<AInGamePlayerControllerBase*> GetPlayerControllerList();
+
+	UFUNCTION(BlueprintCallable)
+	void SetPlayerInformation(AInGamePlayerControllerBase* NewPC);
 };

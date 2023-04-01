@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "InGamePlayerControllerBase.generated.h"
 
+class AStartPoint;
 class UNiagaraSystem;
 
 /**
@@ -31,6 +32,16 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* SelectAction;
+	
+	//标记匹配进来的玩家序号
+	UPROPERTY(BlueprintReadWrite)
+	int32 PlayerIndex;
+	
+	UFUNCTION(BlueprintCallable)
+	AStartPoint* GetPlayerStartPoint();
+
+	UFUNCTION(BlueprintCallable)
+	void SetPlayerStartPoint();
 	
 	virtual void SetupInputComponent() override;
 	
