@@ -3,8 +3,12 @@
 
 #include "InGamePlayerControllerBase.h"
 
+#include <string>
+
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "RoadMaster2/SubSystem/RMGameInstanceSubsystem.h"
+
 
 
 AInGamePlayerControllerBase::AInGamePlayerControllerBase()
@@ -49,7 +53,9 @@ void AInGamePlayerControllerBase::OnHotKeyTriggered()
 	UE_LOG(LogTemp,Warning,TEXT("Keyboard Pressed"))
 	if(IsInputKeyDown(EKeys::A))
 	{
-		
+		UGameInstance* GameInstance = GetGameInstance();
+		auto RMSys = GameInstance->GetSubsystem<URMGameInstanceSubsystem>();
+		UE_LOG(LogTemp, Warning, TEXT("ThisClientIndex = %d"), RMSys->CurrentInMapIndex);
 	}
 }
 
@@ -75,4 +81,11 @@ AStartPoint* AInGamePlayerControllerBase::GetPlayerStartPoint()
 
 void AInGamePlayerControllerBase::SetPlayerStartPoint()
 {
+}
+
+UGameInstance* AInGamePlayerControllerBase::GetGameInstance()
+{
+	UWorld* World = GetWorld();
+	UGameInstance* GameInstance = World->GetGameInstance();
+	return  GameInstance;
 }

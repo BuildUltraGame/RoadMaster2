@@ -21,6 +21,8 @@ class ROADMASTER2_API ALobbyGameMode : public AGameMode
 public:
 	ALobbyGameMode();
 
+	virtual void PostLogin(APlayerController* NewPlayer) override;
+
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	int32 CurrentMapID;
 

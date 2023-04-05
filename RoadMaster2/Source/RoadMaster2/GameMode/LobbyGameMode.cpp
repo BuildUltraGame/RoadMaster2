@@ -42,3 +42,8 @@ TArray<ALobbyPlayerController*> ALobbyGameMode::GetPlayerControllerList()
 	}
 	return PlayerList;
 }
+
+void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
+}

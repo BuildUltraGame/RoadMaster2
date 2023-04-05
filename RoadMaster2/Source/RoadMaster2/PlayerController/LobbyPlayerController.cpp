@@ -3,7 +3,9 @@
 
 #include "LobbyPlayerController.h"
 
+#include "AdvancedSessionsLibrary.h"
 #include "Net/UnrealNetwork.h"
+#include "RoadMaster2/SubSystem/RMGameInstanceSubsystem.h"
 
 void ALobbyPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -14,11 +16,13 @@ void ALobbyPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 //暂时没啥区别
 void ALobbyPlayerController::OnRepRefreshRoom()
 {
+	SaveNetIDAndIndex();
 	UpdateRoomUI();
 }
 
 void ALobbyPlayerController::OnGameMapIDChange()
 {
+	SaveNetIDAndIndex();
 	UpdateRoomUI();
 }
 
@@ -27,4 +31,28 @@ bool ALobbyPlayerController::IsSelfPlayerController(APlayerController* PC)
 	UWorld* World = GetWorld();
 	APlayerController* OwnPC = World->GetFirstPlayerController();
 	return  OwnPC == PC;
+}
+
+void ALobbyPlayerController::SaveNetIDAndIndex()
+{
+	UWorld* World = GetWorld();
+	ALobbyPlayerController* OwnPC = static_cast<ALobbyPlayerController*>(World->GetFirstPlayerController());
+	FString OwnPlayerName;
+	for (TArray<FPlayerConnectInformation>::TConstIterator InformationIter = RoomPlayerList.CreateConstIterator(); InformationIter; ++InformationIter)
+	{
+		if (InformationIter)
+		{
+			auto PlayerName = InformationIter->PlayerName.ToString();
+			if (OwnPC->PlayerState)
+			{
+				OwnPlayerName = OwnPC->PlayerState->GetPlayerName();
+				if (PlayerName == OwnPlayerName)
+				{
+					UGameInstance* GameInstance = World->GetGameInstance();
+					auto RMSys = GameInstance->GetSubsystem<URMGameInstanceSubsystem>();
+					RMSys->CurrentInMapIndex = InformationIter->index;
+				}
+			}			
+		}
+	}
 }

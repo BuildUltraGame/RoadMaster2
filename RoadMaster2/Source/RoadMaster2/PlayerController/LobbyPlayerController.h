@@ -46,6 +46,9 @@ public:
 	UPROPERTY(ReplicatedUsing = OnGameMapIDChange,BlueprintReadWrite)
 	int32 GameMapID;
 
+	UPROPERTY(BlueprintReadWrite)
+	int32 PlayerIndex;
+
 	UFUNCTION()
 	void OnRepRefreshRoom();
 
@@ -57,6 +60,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool IsSelfPlayerController(APlayerController* PC);
+
+	UFUNCTION(BlueprintCallable)
+	void SaveNetIDAndIndex();
 	
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > &OutLifetimeProps) const override;

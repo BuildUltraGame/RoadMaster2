@@ -49,6 +49,10 @@ public:
 	virtual void BeginPlay();
 
 	AInGamePlayerControllerBase();
+
+	//常用工具
+	UFUNCTION(BlueprintCallable)
+	UGameInstance* GetGameInstance();
 	
 protected:
 	void OnHotKeyTriggered();
