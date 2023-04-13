@@ -35,9 +35,14 @@ bool ALobbyPlayerController::IsSelfPlayerController(APlayerController* PC)
 
 void ALobbyPlayerController::SaveNetIDAndIndex()
 {
-	UWorld* World = GetWorld();
-	ALobbyPlayerController* OwnPC = static_cast<ALobbyPlayerController*>(World->GetFirstPlayerController());
+	UWorld* World = GetWorld();	
 	FString OwnPlayerName;
+	APlayerController* OwnNativePC = World->GetFirstPlayerController();
+	if (OwnNativePC->PlayerState)
+	{
+		OwnPlayerName = OwnNativePC->PlayerState->GetPlayerName();
+	}
+	ALobbyPlayerController* OwnPC = static_cast<ALobbyPlayerController*>(OwnNativePC);
 	for (TArray<FPlayerConnectInformation>::TConstIterator InformationIter = RoomPlayerList.CreateConstIterator(); InformationIter; ++InformationIter)
 	{
 		if (InformationIter)
@@ -55,4 +60,10 @@ void ALobbyPlayerController::SaveNetIDAndIndex()
 			}			
 		}
 	}
+}
+
+void ALobbyPlayerController::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	SaveNetIDAndIndex();
 }

@@ -63,6 +63,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SaveNetIDAndIndex();
+
+	/** PlayerState Replication Notification Callback */
+	virtual void OnRep_PlayerState() override;
 	
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > &OutLifetimeProps) const override;
