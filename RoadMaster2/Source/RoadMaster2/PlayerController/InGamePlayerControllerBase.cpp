@@ -27,6 +27,8 @@ void AInGamePlayerControllerBase::BeginPlay()
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
+	//从大厅切换进来的时候，应该去读取相关的数据
+	LoadPCDataFromSubSys();
 }
 
 
@@ -88,4 +90,26 @@ UGameInstance* AInGamePlayerControllerBase::GetGameInstance()
 	UWorld* World = GetWorld();
 	UGameInstance* GameInstance = World->GetGameInstance();
 	return  GameInstance;
+}
+
+void AInGamePlayerControllerBase::LoadPCDataFromSubSys()
+{
+	if (GIsClient)
+	{
+		UGameInstance* GameInstance =GetGameInstance();
+		auto RMSys = GameInstance->GetSubsystem<URMGameInstanceSubsystem>();
+		if (RMSys)
+		{
+			LocalPlayerIndex = RMSys->CurrentInMapIndex;
+		}
+		LoginData_Server(LocalPlayerIndex);
+	}	
+}
+
+void AInGamePlayerControllerBase::LoginData_Server_Implementation(int32 PlayerIndex)
+{
+	if (GIsServer)
+	{
+		LocalPlayerIndex = PlayerIndex;
+	}
 }

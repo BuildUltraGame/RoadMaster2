@@ -53,10 +53,17 @@ public:
 	//常用工具
 	UFUNCTION(BlueprintCallable)
 	UGameInstance* GetGameInstance();
+
+	UPROPERTY(BlueprintGetter,VisibleAnywhere)
+	int32 LocalPlayerIndex;
+
+	UFUNCTION(BlueprintCallable,Server)
+	void LoginData_Server(int32 PlayerIndex);
 	
 protected:
 	void OnHotKeyTriggered();
 	void OnSelectStarted();
 	void OnSelectTriggered();
 	void OnSelectReleased();
+	void LoadPCDataFromSubSys();
 };
