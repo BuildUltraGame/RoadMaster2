@@ -7,6 +7,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "RoadMaster2/GameMode/InGameGameModeBase.h"
 #include "RoadMaster2/SubSystem/RMGameInstanceSubsystem.h"
 
 
@@ -106,10 +107,16 @@ void AInGamePlayerControllerBase::LoadPCDataFromSubSys()
 	}	
 }
 
-void AInGamePlayerControllerBase::LoginData_Server_Implementation(int32 PlayerIndex)
+void AInGamePlayerControllerBase::LoginData_Server_Implementation(int32 PlayerMapIndex)
 {
 	if (GIsServer)
 	{
 		LocalPlayerIndex = PlayerIndex;
+		UWorld* World = GetWorld();
+		auto GameMode = static_cast<AInGameGameModeBase*>(World->GetAuthGameMode());
+		if (GameMode)
+		{
+			GameMode->CheckWaitingForConnectOver();
+		}
 	}
 }

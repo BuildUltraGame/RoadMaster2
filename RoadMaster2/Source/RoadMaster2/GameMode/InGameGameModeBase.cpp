@@ -2,6 +2,8 @@
 
 
 #include "InGameGameModeBase.h"
+
+#include "RoadMaster2/GameState/InBattleGameState.h"
 #include "RoadMaster2/PlayerController/InGamePlayerControllerBase.h"
 
 void AInGameGameModeBase::PostInitializeComponents()
@@ -93,4 +95,18 @@ TArray<AInGamePlayerControllerBase*> AInGameGameModeBase::GetPlayerControllerLis
 
 void AInGameGameModeBase::SetPlayerInformation(AInGamePlayerControllerBase* NewPC)
 {
+}
+
+void AInGameGameModeBase::CheckWaitingForConnectOver()
+{
+	if (NumTravellingPlayers == 0)
+	{
+		auto InGameState = static_cast<AInBattleGameState*>(GameState);
+		if (InGameState->InGameSubState == EInGameSubState::WaitingForConnect)
+		{
+			InGameState->InGameSubState = EInGameSubState::Initializing;
+			InGameState->ExecSubStateChange(EInGameSubState::WaitingForConnect);
+		}
+		
+	}
 }

@@ -54,11 +54,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UGameInstance* GetGameInstance();
 
-	UPROPERTY(BlueprintGetter,VisibleAnywhere)
+	UPROPERTY(BlueprintReadOnly,VisibleAnywhere)
 	int32 LocalPlayerIndex;
 
-	UFUNCTION(BlueprintCallable,Server)
-	void LoginData_Server(int32 PlayerIndex);
+	UFUNCTION(BlueprintCallable,Server,Reliable)
+	void LoginData_Server(int32 PlayerMapIndex);
 	
 protected:
 	void OnHotKeyTriggered();

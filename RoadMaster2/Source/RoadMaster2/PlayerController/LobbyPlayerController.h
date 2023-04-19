@@ -28,6 +28,9 @@ struct FPlayerConnectInformation
 	//编号
 	UPROPERTY(BlueprintReadWrite)
 	int32 index;
+	//玩家ID
+	UPROPERTY(BlueprintReadWrite)
+	int32 PlayerId;
 };
 
 

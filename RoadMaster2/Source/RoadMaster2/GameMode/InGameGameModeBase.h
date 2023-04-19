@@ -51,4 +51,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetPlayerInformation(AInGamePlayerControllerBase* NewPC);
+	
+	UFUNCTION()
+	void CheckWaitingForConnectOver();
+
 };

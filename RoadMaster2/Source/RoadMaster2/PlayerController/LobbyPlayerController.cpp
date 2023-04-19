@@ -36,28 +36,23 @@ bool ALobbyPlayerController::IsSelfPlayerController(APlayerController* PC)
 void ALobbyPlayerController::SaveNetIDAndIndex()
 {
 	UWorld* World = GetWorld();	
-	FString OwnPlayerName;
+	int32 OwnPlayerID = -1;
 	APlayerController* OwnNativePC = World->GetFirstPlayerController();
 	if (OwnNativePC->PlayerState)
 	{
-		OwnPlayerName = OwnNativePC->PlayerState->GetPlayerName();
+		OwnPlayerID = OwnNativePC->PlayerState->GetPlayerId();
 	}
-	ALobbyPlayerController* OwnPC = static_cast<ALobbyPlayerController*>(OwnNativePC);
 	for (TArray<FPlayerConnectInformation>::TConstIterator InformationIter = RoomPlayerList.CreateConstIterator(); InformationIter; ++InformationIter)
 	{
 		if (InformationIter)
 		{
-			auto PlayerName = InformationIter->PlayerName.ToString();
-			if (OwnPC->PlayerState)
+			auto PlayerID = InformationIter->PlayerId;
+			if (PlayerID == OwnPlayerID)
 			{
-				OwnPlayerName = OwnPC->PlayerState->GetPlayerName();
-				if (PlayerName == OwnPlayerName)
-				{
-					UGameInstance* GameInstance = World->GetGameInstance();
-					auto RMSys = GameInstance->GetSubsystem<URMGameInstanceSubsystem>();
-					RMSys->CurrentInMapIndex = InformationIter->index;
-				}
-			}			
+				UGameInstance* GameInstance = World->GetGameInstance();
+				auto RMSys = GameInstance->GetSubsystem<URMGameInstanceSubsystem>();
+				RMSys->CurrentInMapIndex = InformationIter->index;
+			}		
 		}
 	}
 }

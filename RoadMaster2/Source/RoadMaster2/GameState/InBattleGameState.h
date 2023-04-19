@@ -44,6 +44,10 @@ public:
 	UFUNCTION()
 	void OnRep_InGameSubState(EInGameSubState OldValue);
 
+	//执行阶段转换时的主要方法
+	UFUNCTION()
+	void ExecSubStateChange(EInGameSubState OldValue);
+
 	UPROPERTY(BlueprintReadWrite)
 	FOnGameStarted OnGameStartedDelegate;
 
@@ -53,7 +57,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetInGameSubState(EInGameSubState NewState);
 
-	//汇报联机状态，用以确认联机数量
+	//汇报联机状态，用以确认联机数量 todo 目前没啥用
 	UFUNCTION(Server,BlueprintCallable,Reliable)
 	void ReportConnectionInServer();
 
@@ -61,7 +65,13 @@ public:
 	UFUNCTION()
 	void DoInitialize();
 
-	//
+	void InBattleGameState();
+
+#pragma region >>> Game Base Variables
+
+	
+
+#pragma endregion <<< Game Base Variables
 	
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > &OutLifetimeProps) const override;
