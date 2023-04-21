@@ -6,6 +6,7 @@
 #include "GameFramework/GameState.h"
 #include "InBattleGameState.generated.h"
 
+class AUnitInfoBase;
 UENUM()
 enum class EInGameSubState : uint8
 {
@@ -65,16 +66,45 @@ public:
 	UFUNCTION()
 	void DoInitialize();
 
-	void InBattleGameState();
+	
 
 #pragma region >>> Game Base Variables
 
-	
+	//用以配置当前关卡出场单位
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	TArray<TSubclassOf<AUnitInfoBase>> UnitClassArray;
+
+	//运行时，储存单位模板信息
+	UPROPERTY(BlueprintReadWrite)
+	TArray<AUnitInfoBase*> UnitInfos;
+
+	//每个阶段的游戏时间
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	TMap<EInGameSubState,int> TimePerState;
 
 #pragma endregion <<< Game Base Variables
+
+	//阶段计时器handle
+	FTimerHandle TimerHandle;
+	
+	void InBattleGameState();
+
+	virtual void Tick(float DeltaSeconds) override;
 	
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > &OutLifetimeProps) const override;
 
 	virtual void BeginPlay() override;
+
+	//倒计时结束的操作
+	virtual void SubStateTimeOut();
+
+	//预选阶段结束的接口
+	virtual void FinishPreArrageMent();
+
+	//每段游戏结束的接口
+	virtual void CheckGameEnd();
+
+private:
+	void CheckStateTimerStart();
 };
