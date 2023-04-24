@@ -6,6 +6,7 @@
 #include "Net/UnrealNetwork.h"
 #include "RoadMaster2/Data/UnitInfoBase.h"
 #include "RoadMaster2/GameMode/InGameGameModeBase.h"
+#include "RoadMaster2/PlayerState/InGamePlayerStateBase.h"
 
 #pragma region base function
 
@@ -158,6 +159,7 @@ void AInBattleGameState::StartInitialize(EInGameSubState OldState)
 {
 	if (!UnitClassArray.IsEmpty())
 	{
+		//GameState初始化
 		UWorld* World = GetWorld();
 		for (auto Element : UnitClassArray)
 		{
@@ -166,11 +168,30 @@ void AInBattleGameState::StartInitialize(EInGameSubState OldState)
 			SubObj->DoDataOverride();
 			UnitInfos.Add(SubObj);
 		}
+		//PlayerState初始化
+		const auto OwnPC = World->GetFirstPlayerController();
+		const auto OwnPlayerState = static_cast<AInGamePlayerStateBase*>(OwnPC->PlayerState);
+		if (IsValid(OwnPlayerState))
+		{
+			OwnPlayerState->InitialPlayerState();
+		}
 	}
 }
 
 bool AInBattleGameState::CheckInitialize()
 {
+	if (GIsServer)
+	{
+		for (auto PlayerState : PlayerArray)
+		{
+			const auto InGamePlayerState = static_cast<AInGamePlayerStateBase*>(PlayerState);
+			if (!InGamePlayerState->IsPlayerStateInit)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 	return false;
 }
 

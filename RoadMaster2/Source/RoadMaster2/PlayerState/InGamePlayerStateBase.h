@@ -21,6 +21,16 @@ public:
 	virtual void OnRep_PlayerId() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	//player state 在 Initial阶段的初始化，完成后认为该client初始化完成
+	virtual void InitialPlayerState();
+
+#pragma region Client Player State Variables
+
+	UPROPERTY(Replicated)
+	bool IsPlayerStateInit;
+
+#pragma  endregion Client Player State Variables
+
 
 #pragma region >>> Game Base Variables
 	//当局得分

@@ -8,6 +8,7 @@
 void AInGamePlayerStateBase::BeginPlay()
 {
 	Super::BeginPlay();
+	IsPlayerStateInit = false;
 }
 
 void AInGamePlayerStateBase::OnRep_PlayerId()
@@ -21,6 +22,7 @@ void AInGamePlayerStateBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	DOREPLIFETIME(AInGamePlayerStateBase, RoundScore);
 	DOREPLIFETIME(AInGamePlayerStateBase, GameScore);
 	DOREPLIFETIME(AInGamePlayerStateBase, Fund);
+	DOREPLIFETIME(AInGamePlayerStateBase, IsPlayerStateInit);
 }
 
 void AInGamePlayerStateBase::OnRep_RoundScore()
@@ -33,5 +35,10 @@ void AInGamePlayerStateBase::OnRep_GameScore()
 
 void AInGamePlayerStateBase::OnRep_Fund()
 {
+}
+
+void AInGamePlayerStateBase::InitialPlayerState()
+{
+	IsPlayerStateInit = true;
 }
 

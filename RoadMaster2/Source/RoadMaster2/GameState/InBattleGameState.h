@@ -108,6 +108,10 @@ public:
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	TMap<EInGameSubState,int> TimePerState;
 
+	//开局金钱
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	int32 StartFund;
+
 #pragma endregion <<< Game Base Variables
 
 	//阶段计时器handle

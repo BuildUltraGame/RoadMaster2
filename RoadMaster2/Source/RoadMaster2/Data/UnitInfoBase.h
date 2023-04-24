@@ -53,6 +53,8 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TSubclassOf<AMovableUnits> UnitClass;
 
+	//关联的CardUI
+
 	AUnitInfoBase();
 
 	UFUNCTION()
