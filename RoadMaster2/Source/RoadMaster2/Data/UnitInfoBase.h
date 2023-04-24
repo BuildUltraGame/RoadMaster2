@@ -28,7 +28,7 @@ public:
 /**
  * 存储基础的单位数据的数据类
  */
-UCLASS()
+UCLASS(notplaceable, BlueprintType, Blueprintable)
 class ROADMASTER2_API AUnitInfoBase : public AInfo
 {
 	GENERATED_BODY()

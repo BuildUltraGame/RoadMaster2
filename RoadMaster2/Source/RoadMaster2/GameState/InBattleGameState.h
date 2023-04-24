@@ -11,24 +11,57 @@ UENUM()
 enum class EInGameSubState : uint8
 {
 	/*  在同步上之前，等待连接的状态  */
-	WaitingForConnect,
+	WaitingForConnect UMETA(DisplayName = "WaitingForConnect"),
 	/*  初始化的状态  */
-	Initializing,
+	Initializing UMETA(DisplayName = "Initializing"),
 	/*  策略预选阶段  */
-	PreArrangement,
+	PreArrangement UMETA(DisplayName = "PreArrangement"),
 	/*  游戏进行中	*/
-	GamePlay,
+	GamePlay UMETA(DisplayName = "GamePlay"),
 	/*  暂停状态		*/
-	Suspend,
+	Suspend UMETA(DisplayName = "Suspend"),
 	/*	节间暂停		*/
-	BetweenGameSuspend,
+	BetweenGameSuspend UMETA(DisplayName = "BetweenGameSuspend"),
 	/*	结算阶段		*/
-	Settlement,
+	Settlement UMETA(DisplayName = "Settlement"),
 	/*	结束阶段		*/
-	End,
+	End UMETA(DisplayName = "End"),
 };
 
-DECLARE_DYNAMIC_DELEGATE_OneParam(FOnGameStarted,EInGameSubState,OldState);
+ENUM_RANGE_BY_COUNT(EInGameSubState, EInGameSubState::End);
+
+//阶段开始时的委托
+DECLARE_DYNAMIC_DELEGATE_OneParam(FOnStateStartDelegate,EInGameSubState,OldState);
+
+//判断阶段结束的委托
+DECLARE_DYNAMIC_DELEGATE_RetVal(bool,FCheckStateEndDelegate);
+
+//阶段结束时的委托
+DECLARE_DYNAMIC_DELEGATE_OneParam(FOnStateEndDelegate,bool,IsTimeOut);
+
+//获取下一阶段的委托
+DECLARE_DELEGATE_RetVal(EInGameSubState,FGetNextStateDelegate)
+
+USTRUCT()
+struct FSubStateWithDelegate
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	EInGameSubState SubState;
+
+	UPROPERTY()
+	FOnStateStartDelegate StateStartDelegate;
+
+	//注意 这里不能被uproperty修饰，因为没有size
+	FCheckStateEndDelegate CheckStateEndDelegate;
+
+	UPROPERTY()
+	FOnStateEndDelegate StateEndDelegate;
+
+	FGetNextStateDelegate GetNextStateDelegate;
+};
+
 
 
 /**
@@ -42,6 +75,10 @@ public:
 	UPROPERTY(ReplicatedUsing = OnRep_InGameSubState,BlueprintReadWrite)
 	EInGameSubState InGameSubState;
 
+	//检查当前状态的切换
+	UFUNCTION()
+	void CheckCurrentStateChange();
+	
 	UFUNCTION()
 	void OnRep_InGameSubState(EInGameSubState OldValue);
 
@@ -49,23 +86,12 @@ public:
 	UFUNCTION()
 	void ExecSubStateChange(EInGameSubState OldValue);
 
-	UPROPERTY(BlueprintReadWrite)
-	FOnGameStarted OnGameStartedDelegate;
-
-	UFUNCTION()
-	void GamePlayStart(EInGameSubState OldState);
-
 	UFUNCTION(BlueprintCallable)
-	void SetInGameSubState(EInGameSubState NewState);
+	void SetInGameSubState(EInGameSubState NewState);	
 
-	//汇报联机状态，用以确认联机数量 todo 目前没啥用
-	UFUNCTION(Server,BlueprintCallable,Reliable)
-	void ReportConnectionInServer();
-
-	//初始化阶段的操作
-	UFUNCTION()
-	void DoInitialize();
-
+	//每个状态的进入和判定函数
+	UPROPERTY()
+	TMap<EInGameSubState,FSubStateWithDelegate> SubStateMap;
 	
 
 #pragma region >>> Game Base Variables
@@ -87,7 +113,7 @@ public:
 	//阶段计时器handle
 	FTimerHandle TimerHandle;
 	
-	void InBattleGameState();
+	AInBattleGameState();
 
 	virtual void Tick(float DeltaSeconds) override;
 	
@@ -98,13 +124,55 @@ protected:
 
 	//倒计时结束的操作
 	virtual void SubStateTimeOut();
+	
+	//记录了各个SubState的arr，包括其检查方式和回调
+	virtual void InitSubStateArray();
 
-	//预选阶段结束的接口
-	virtual void FinishPreArrageMent();
+#pragma region <<<Delegates For State Changing
 
-	//每段游戏结束的接口
-	virtual void CheckGameEnd();
+	//连接阶段的操作
+	UFUNCTION()
+	virtual void StartConnect(EInGameSubState OldState);
+
+	UFUNCTION()
+	virtual bool CheckConnect();
+	
+	UFUNCTION()
+	virtual void EndConnect(bool IsTimeOut);
+
+	//初始化阶段的操作
+	UFUNCTION()
+	virtual void StartInitialize(EInGameSubState OldState);
+
+	UFUNCTION()
+	virtual bool CheckInitialize();
+	
+	UFUNCTION()
+	virtual void EndInitialize(bool IsTimeOut);
+
+	//预选阶段的操作
+	UFUNCTION()
+	virtual void StartPreArrangement(EInGameSubState OldState);
+
+	UFUNCTION()
+	virtual bool CheckPreArrangement();
+	
+	UFUNCTION()
+	virtual void EndPreArrangement(bool IsTimeOut);
+
+	//预选阶段的操作
+	UFUNCTION()
+	virtual void StartGamePlay(EInGameSubState OldState);
+
+	UFUNCTION()
+	virtual bool CheckGamePlay();
+	
+	UFUNCTION()
+	virtual void EndGamePlay(bool IsTimeOut);
+
+#pragma endregion Delegates For State Changing>>>
+
 
 private:
-	void CheckStateTimerStart();
+	void StateTimeOutTimerStart();
 };

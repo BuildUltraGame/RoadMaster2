@@ -104,8 +104,7 @@ void AInGameGameModeBase::CheckWaitingForConnectOver()
 		auto InGameState = static_cast<AInBattleGameState*>(GameState);
 		if (InGameState->InGameSubState == EInGameSubState::WaitingForConnect)
 		{
-			InGameState->InGameSubState = EInGameSubState::Initializing;
-			InGameState->ExecSubStateChange(EInGameSubState::WaitingForConnect);
+			InGameState->CheckCurrentStateChange();
 		}
 		
 	}

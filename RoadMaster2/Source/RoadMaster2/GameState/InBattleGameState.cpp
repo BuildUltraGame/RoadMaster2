@@ -5,6 +5,7 @@
 
 #include "Net/UnrealNetwork.h"
 #include "RoadMaster2/Data/UnitInfoBase.h"
+#include "RoadMaster2/GameMode/InGameGameModeBase.h"
 
 #pragma region base function
 
@@ -20,28 +21,29 @@ void AInBattleGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 }
 
 
-void AInBattleGameState::InBattleGameState()
-{
+AInBattleGameState::AInBattleGameState()
+{	
 	InGameSubState = EInGameSubState::WaitingForConnect;
+	InitSubStateArray();
 	//初始化各个阶段的时间
-	TimePerState[EInGameSubState::WaitingForConnect] = 0;
-	TimePerState[EInGameSubState::Initializing] = 0;
-	TimePerState[EInGameSubState::PreArrangement] = 0;
-	TimePerState[EInGameSubState::GamePlay] = 0;
-	TimePerState[EInGameSubState::BetweenGameSuspend] = 0;
-	TimePerState[EInGameSubState::Settlement] = 0;
+	for (const auto& SubState : SubStateMap)
+	{		
+		if (!TimePerState.Contains(SubState.Value.SubState))
+		{
+			TimePerState.Add(SubState.Value.SubState,0);			
+		}
+	}
 }
 
 void AInBattleGameState::BeginPlay()
 {
 	Super::BeginPlay();
-	OnGameStartedDelegate.BindUFunction(this,TEXT("GamePlayStart"));
-	CheckStateTimerStart();
+	StateTimeOutTimerStart();
 }
 
 #pragma endregion
 
-#pragma region state controller
+#pragma region <<<<<state controller
 
 
 void AInBattleGameState::SetInGameSubState(EInGameSubState NewState)
@@ -63,45 +65,34 @@ void AInBattleGameState::OnRep_InGameSubState(EInGameSubState OldValue)
 //状态进入的起点
 void AInBattleGameState::ExecSubStateChange(EInGameSubState OldValue)
 {
-	//todo Here 游戏状态转移的接口方法
-	if (InGameSubState == EInGameSubState::Initializing)
+	const auto StateStruct = SubStateMap[InGameSubState];
+	if (StateStruct.StateStartDelegate.IsBound())
 	{
-		DoInitialize();
-	}
-	if (InGameSubState == EInGameSubState::GamePlay)
-	{
-		OnGameStartedDelegate.Execute(OldValue);
+		StateStruct.StateStartDelegate.Execute(OldValue);
 	}
 	//服务器进行倒计时计算
-	CheckStateTimerStart();
+	StateTimeOutTimerStart();
 }
 
 
 //阶段倒计时结束
 void AInBattleGameState::SubStateTimeOut()
 {
-	if (InGameSubState == EInGameSubState::WaitingForConnect)
+	if (GIsServer)
 	{
-		SetInGameSubState(EInGameSubState::Initializing);
-	}
-	
-	if (InGameSubState == EInGameSubState::Initializing)
-	{
-		SetInGameSubState(EInGameSubState::PreArrangement);
-	}
-	
-	if (InGameSubState == EInGameSubState::PreArrangement)
-	{
-		FinishPreArrageMent();
-	}
-	
-	if (InGameSubState == EInGameSubState::GamePlay)
-	{
-		CheckGameEnd();
-	}
+		//执行最后的操作
+		const auto StateStruct = SubStateMap[InGameSubState];
+		if (StateStruct.StateEndDelegate.IsBound())
+		{
+			StateStruct.StateEndDelegate.Execute(true);
+		}
+		//切换状态
+		SetInGameSubState(StateStruct.GetNextStateDelegate.Execute());
+	}	
 }
 
-void AInBattleGameState::CheckStateTimerStart()
+//超时计时器启动
+void AInBattleGameState::StateTimeOutTimerStart()
 {
 	if (GIsServer)
 	{
@@ -116,10 +107,54 @@ void AInBattleGameState::CheckStateTimerStart()
 	}
 }
 
-#pragma endregion 
+// 定时check当前阶段是否完成
+void AInBattleGameState::CheckCurrentStateChange()
+{
+	if (GIsServer)
+	{
+		//执行最后的操作
+		const auto StateStruct = SubStateMap[InGameSubState];
+		if (StateStruct.CheckStateEndDelegate.IsBound())
+		{
+			if (StateStruct.CheckStateEndDelegate.Execute())
+			{			
+				//切换状态
+				if (StateStruct.StateEndDelegate.IsBound())
+				{
+					StateStruct.StateEndDelegate.Execute(false);
+				}
+				SetInGameSubState(StateStruct.GetNextStateDelegate.Execute());
+			}
+		}
+	}	
+}
+
+#pragma endregion state controller>>>>>
 
 
-void AInBattleGameState::DoInitialize()
+#pragma  region  <<<Delegates For State Changing
+void AInBattleGameState::StartConnect(EInGameSubState OldState)
+{
+}
+
+bool AInBattleGameState::CheckConnect()
+{
+	if (GIsServer)
+	{
+		auto GameModeInstance = GetDefaultGameMode<AInGameGameModeBase>();
+		if (GameModeInstance->NumTravellingPlayers == 0)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void AInBattleGameState::EndConnect(bool IsTimeOut)
+{
+}
+
+void AInBattleGameState::StartInitialize(EInGameSubState OldState)
 {
 	if (!UnitClassArray.IsEmpty())
 	{
@@ -134,21 +169,90 @@ void AInBattleGameState::DoInitialize()
 	}
 }
 
-void AInBattleGameState::GamePlayStart(EInGameSubState OldState)
+bool AInBattleGameState::CheckInitialize()
 {
-	
+	return false;
 }
 
-
-void AInBattleGameState::ReportConnectionInServer_Implementation()
-{
-	
-}
-
-void AInBattleGameState::FinishPreArrageMent()
+void AInBattleGameState::EndInitialize(bool IsTimeOut)
 {
 }
 
-void AInBattleGameState::CheckGameEnd()
+void AInBattleGameState::StartPreArrangement(EInGameSubState OldState)
 {
+}
+
+bool AInBattleGameState::CheckPreArrangement()
+{
+	return false;
+}
+
+void AInBattleGameState::EndPreArrangement(bool IsTimeOut)
+{
+}
+
+void AInBattleGameState::StartGamePlay(EInGameSubState OldState)
+{
+}
+
+bool AInBattleGameState::CheckGamePlay()
+{
+	return false;
+}
+
+void AInBattleGameState::EndGamePlay(bool IsTimeOut)
+{
+}
+
+
+#pragma endregion Delegates For State Changing>>>
+
+
+
+void AInBattleGameState::InitSubStateArray()
+{
+	for (const auto& EnumValue : TEnumRange<EInGameSubState>())
+	{
+		FSubStateWithDelegate StateStruct;
+		switch (EnumValue)
+		{
+		case EInGameSubState::WaitingForConnect:
+			StateStruct.StateStartDelegate.BindUFunction(this,TEXT("StartConnect"));
+			StateStruct.CheckStateEndDelegate.BindUFunction(this,TEXT("CheckConnect"));
+			StateStruct.StateEndDelegate.BindUFunction(this,TEXT("EndConnect"));
+			break;
+
+		case EInGameSubState::Initializing:
+			StateStruct.StateStartDelegate.BindUFunction(this,TEXT("StartInitialize"));
+			StateStruct.CheckStateEndDelegate.BindUFunction(this,TEXT("CheckInitialize"));
+			StateStruct.StateEndDelegate.BindUFunction(this,TEXT("EndInitialize"));
+			break;
+
+		case EInGameSubState::PreArrangement:
+			StateStruct.StateStartDelegate.BindUFunction(this,TEXT("StartPreArrangement"));
+			StateStruct.CheckStateEndDelegate.BindUFunction(this,TEXT("CheckPreArrangement"));
+			StateStruct.StateEndDelegate.BindUFunction(this,TEXT("EndPreArrangement"));
+			break;
+
+		case EInGameSubState::GamePlay:
+			StateStruct.StateStartDelegate.BindUFunction(this,TEXT("StartGamePlay"));
+			StateStruct.CheckStateEndDelegate.BindUFunction(this,TEXT("CheckGamePlay"));
+			StateStruct.StateEndDelegate.BindUFunction(this,TEXT("EndGamePlay"));
+			break;
+
+		case EInGameSubState::BetweenGameSuspend:
+			// 处理 Value3
+			break;
+
+		case EInGameSubState::Settlement:
+			// 处理 Value3
+			break;
+
+		default:
+			// 处理未知枚举值
+			break;
+		}
+		StateStruct.SubState = EnumValue;
+		SubStateMap.Add(EnumValue,StateStruct);
+	}
 }
