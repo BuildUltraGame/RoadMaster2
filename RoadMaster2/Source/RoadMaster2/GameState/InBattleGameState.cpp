@@ -25,6 +25,7 @@ void AInBattleGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 AInBattleGameState::AInBattleGameState()
 {	
 	InGameSubState = EInGameSubState::WaitingForConnect;
+	IsToEndGame = false;
 	InitSubStateArray();
 	//初始化各个阶段的时间
 	for (const auto& SubState : SubStateMap)
@@ -88,7 +89,7 @@ void AInBattleGameState::SubStateTimeOut()
 			StateStruct.StateEndDelegate.Execute(true);
 		}
 		//切换状态
-		SetInGameSubState(StateStruct.GetNextStateDelegate.Execute());
+		SetInGameSubState(StateStruct.GetNextStateDelegate.Execute(StateStruct.SubState));
 	}	
 }
 
@@ -124,7 +125,7 @@ void AInBattleGameState::CheckCurrentStateChange()
 				{
 					StateStruct.StateEndDelegate.Execute(false);
 				}
-				SetInGameSubState(StateStruct.GetNextStateDelegate.Execute());
+				SetInGameSubState(StateStruct.GetNextStateDelegate.Execute(StateStruct.SubState));
 			}
 		}
 	}	
@@ -225,6 +226,28 @@ void AInBattleGameState::EndGamePlay(bool IsTimeOut)
 {
 }
 
+EInGameSubState AInBattleGameState::GetNextState(EInGameSubState CurState)
+{
+	switch (CurState)
+	{
+	case EInGameSubState::WaitingForConnect:
+			return EInGameSubState::Initializing;
+	case EInGameSubState::Initializing:
+		return EInGameSubState::PreArrangement;
+	case EInGameSubState::PreArrangement:
+		return EInGameSubState::GamePlay;
+	case EInGameSubState::GamePlay:
+		if (IsToEndGame)
+		{
+			return EInGameSubState::End;
+		}
+		return EInGameSubState::BetweenGameSuspend;
+	case EInGameSubState::BetweenGameSuspend:
+		return EInGameSubState::GamePlay;
+	default:
+		return EInGameSubState::End;
+	}	
+}
 
 #pragma endregion Delegates For State Changing>>>
 
@@ -241,32 +264,36 @@ void AInBattleGameState::InitSubStateArray()
 			StateStruct.StateStartDelegate.BindUFunction(this,TEXT("StartConnect"));
 			StateStruct.CheckStateEndDelegate.BindUFunction(this,TEXT("CheckConnect"));
 			StateStruct.StateEndDelegate.BindUFunction(this,TEXT("EndConnect"));
+			StateStruct.GetNextStateDelegate.BindUFunction(this,TEXT("GetNextState"));
 			break;
 
 		case EInGameSubState::Initializing:
 			StateStruct.StateStartDelegate.BindUFunction(this,TEXT("StartInitialize"));
 			StateStruct.CheckStateEndDelegate.BindUFunction(this,TEXT("CheckInitialize"));
 			StateStruct.StateEndDelegate.BindUFunction(this,TEXT("EndInitialize"));
+			StateStruct.GetNextStateDelegate.BindUFunction(this,TEXT("GetNextState"));
 			break;
 
 		case EInGameSubState::PreArrangement:
 			StateStruct.StateStartDelegate.BindUFunction(this,TEXT("StartPreArrangement"));
 			StateStruct.CheckStateEndDelegate.BindUFunction(this,TEXT("CheckPreArrangement"));
 			StateStruct.StateEndDelegate.BindUFunction(this,TEXT("EndPreArrangement"));
+			StateStruct.GetNextStateDelegate.BindUFunction(this,TEXT("GetNextState"));
 			break;
 
 		case EInGameSubState::GamePlay:
 			StateStruct.StateStartDelegate.BindUFunction(this,TEXT("StartGamePlay"));
 			StateStruct.CheckStateEndDelegate.BindUFunction(this,TEXT("CheckGamePlay"));
 			StateStruct.StateEndDelegate.BindUFunction(this,TEXT("EndGamePlay"));
+			StateStruct.GetNextStateDelegate.BindUFunction(this,TEXT("GetNextState"));
 			break;
 
 		case EInGameSubState::BetweenGameSuspend:
-			// 处理 Value3
+			StateStruct.GetNextStateDelegate.BindUFunction(this,TEXT("GetNextState"));
 			break;
 
 		case EInGameSubState::Settlement:
-			// 处理 Value3
+			StateStruct.GetNextStateDelegate.BindUFunction(this,TEXT("GetNextState"));
 			break;
 
 		default:

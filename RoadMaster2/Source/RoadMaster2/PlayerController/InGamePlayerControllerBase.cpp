@@ -7,6 +7,8 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameFramework/PlayerStart.h"
+#include "Kismet/GameplayStatics.h"
 #include "RoadMaster2/GameMode/InGameGameModeBase.h"
 #include "RoadMaster2/SubSystem/RMGameInstanceSubsystem.h"
 
@@ -84,6 +86,18 @@ AStartPoint* AInGamePlayerControllerBase::GetPlayerStartPoint()
 
 void AInGamePlayerControllerBase::SetPlayerStartPoint()
 {
+	UWorld* World = GetWorld();
+	FName Tag = FName(*FString::Printf(TEXT("Player%d"),LocalPlayerIndex));
+	TArray<AActor*> ActorArray;
+	UGameplayStatics::GetAllActorsWithTag(World,Tag,ActorArray);
+	for(auto actor: ActorArray)
+	{
+		auto StartPoint = static_cast<APlayerStart*>(actor);
+		if (IsValid(StartPoint))
+		{
+			//SetActorLocation(StartPoint->GetActorLocation());
+		}
+	}
 }
 
 UGameInstance* AInGamePlayerControllerBase::GetGameInstance()

@@ -40,7 +40,7 @@ DECLARE_DYNAMIC_DELEGATE_RetVal(bool,FCheckStateEndDelegate);
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnStateEndDelegate,bool,IsTimeOut);
 
 //获取下一阶段的委托
-DECLARE_DELEGATE_RetVal(EInGameSubState,FGetNextStateDelegate)
+DECLARE_DELEGATE_RetVal_OneParam(EInGameSubState,FGetNextStateDelegate,EInGameSubState)
 
 USTRUCT()
 struct FSubStateWithDelegate
@@ -112,6 +112,9 @@ public:
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	int32 StartFund;
 
+	UPROPERTY(BlueprintReadWrite)
+	bool IsToEndGame;
+
 #pragma endregion <<< Game Base Variables
 
 	//阶段计时器handle
@@ -173,6 +176,9 @@ protected:
 	
 	UFUNCTION()
 	virtual void EndGamePlay(bool IsTimeOut);
+
+	UFUNCTION()
+	virtual EInGameSubState GetNextState(EInGameSubState CurState);
 
 #pragma endregion Delegates For State Changing>>>
 
