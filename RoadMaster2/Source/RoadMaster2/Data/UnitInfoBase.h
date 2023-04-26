@@ -54,7 +54,9 @@ public:
 	TSubclassOf<AMovableUnits> UnitClass;
 
 	//关联的CardUI
-
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TSoftObjectPtr<UTexture2D> CardIcon;
+	
 	AUnitInfoBase();
 
 	UFUNCTION()
