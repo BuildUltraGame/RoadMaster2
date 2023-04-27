@@ -34,24 +34,30 @@ class ROADMASTER2_API AUnitInfoBase : public AInfo
 	GENERATED_BODY()
 public:
 	//单位消耗
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (Tooltip = "单位消耗"))
 	int32 Cost;
 
 	//CD
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (Tooltip = "单位冷却时间"))
 	float CoolDownSecond;
 
 	//单位数量
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (Tooltip = "一组该单位的数量"))
 	int32 UnitAmount;
 
 	//单位生成间隔
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (Tooltip = "单位组间间隔时间"))
 	float UnitInterval;
 
 	//是否是可拖拽单位
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (Tooltip = "单位是否可拖拽"))
 	bool IsDragAble;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (Tooltip = "该单位是否一定要沿路行驶"))
+	bool MustMoveOnRoad;
+
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,meta = (Tooltip = "单位线速度"))
+	int32 LinearSpeed;
 	
 	//关联的Unit
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)

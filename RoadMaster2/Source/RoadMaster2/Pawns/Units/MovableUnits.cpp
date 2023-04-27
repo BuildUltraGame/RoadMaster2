@@ -32,18 +32,7 @@ void AMovableUnits::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 }
 
-ALandFormPawn* AMovableUnits::GetStartLand()
-{
-	if (Navigator)
-	{
-		return Navigator->StartLand;
-	}
-	return nullptr;
-}
-
 void AMovableUnits::InitUnitByType(ALandFormPawn* StartLand)
 {
-	Navigator = CreateDefaultSubobject<UNavigationComponent>(TEXT("Navigator"));
 	Spawner = StartLand;
-	Navigator->InitNavigator(this);
 }

@@ -25,4 +25,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category = "SplineLine")
 	TArray<AMovableUnits*> UnitList;
+
+	//获取方向值，+1为从起点进入，-1为从终点进入
+	UFUNCTION(BlueprintCallable)
+	int32 GetDirectionIntForUnit(AMovableUnits* unit);
 };

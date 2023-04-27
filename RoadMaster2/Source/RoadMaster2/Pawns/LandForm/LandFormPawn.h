@@ -17,20 +17,11 @@ public:
 	// Sets default values for this pawn's properties
 	ALandFormPawn();
 
-	UPROPERTY(BlueprintReadWrite,EditAnywhere)
-	UUnitLauncherComponent* UnitLauncher;
+	UPROPERTY(BlueprintReadWrite)
+	USphereComponent* Collider;
 
-	UPROPERTY(BlueprintReadWrite,EditAnywhere)
-	TMap<ALandFormPawn*,bool> NeighborMap;
-
-	UFUNCTION(BlueprintCallable)
-	FVector GetWayPoint();
-
-	UPROPERTY(BlueprintReadWrite,EditAnywhere)
-	USphereComponent* WayPoint;
-
-	UFUNCTION(BlueprintCallable)
-	ALandFormPawn* GetTargetPointByInput(AMovableUnits* ComingUnit);
+	UFUNCTION()
+	void OnCollision();
 	
 protected:
 	// Called when the game starts or when spawned

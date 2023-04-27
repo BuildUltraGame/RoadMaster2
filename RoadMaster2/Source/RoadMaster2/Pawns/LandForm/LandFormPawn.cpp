@@ -10,10 +10,9 @@ ALandFormPawn::ALandFormPawn()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	UnitLauncher = CreateDefaultSubobject<UUnitLauncherComponent>(TEXT("UnitLauncher"));
-	UnitLauncher->LandFormOwner = this;
-	UnitLauncher->SetupAttachment(RootComponent);
-
+	Collider = CreateDefaultSubobject<USphereComponent>(TEXT("UnitLauncher"));
+	Collider->SetupAttachment(RootComponent);
+	Collider->OnComponentBeginOverlap.AddDynamic(this,&ALandFormPawn::OnCollision);
 }
 
 // Called when the game starts or when spawned
@@ -34,34 +33,8 @@ void ALandFormPawn::Tick(float DeltaTime)
 void ALandFormPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
-FVector ALandFormPawn::GetWayPoint()
-{
-	if (IsValid(WayPoint))
-	{
-		return WayPoint->GetActorPositionForRenderer();
-	}
-	return FVector::Zero();
-}
-
-ALandFormPawn* ALandFormPawn::GetTargetPointByInput(AMovableUnits* ComingUnit)
-{
-	if (ComingUnit)
-	{
-		ALandFormPawn* From = ComingUnit->GetStartLand();
-		for (TMap<ALandFormPawn*, bool>::TConstIterator iter = NeighborMap.CreateConstIterator(); iter; ++iter)
-		{
-			if (iter->Key != From && iter->Value != false)
-			{
-				return iter->Key;
-			}
-		}
-		return From;
-	}
-	return nullptr;
-}
 
 
 

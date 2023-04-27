@@ -7,6 +7,7 @@
 #include "RoadMaster2/Component/NavigationComponent.h"
 #include "MovableUnits.generated.h"
 
+class ATrack;
 UCLASS()
 class ROADMASTER2_API AMovableUnits : public ADefaultPawn
 {
@@ -16,20 +17,22 @@ public:
 	// Sets default values for this pawn's properties
 	AMovableUnits();
 
-	UPROPERTY(BlueprintReadWrite,EditAnywhere)
-	UNavigationComponent* Navigator;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,meta = (Tooltip = "该单位是否一定要沿路行驶"))
+	bool MustMoveOnLine = false;
 
-	UPROPERTY(BlueprintReadWrite,EditAnywhere)
-	bool CanBeLaunched = false;
-
-	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,meta = (Tooltip = "单位线速度"))
 	int32 LinearSpeed;
 
 	UPROPERTY(BlueprintReadWrite)
 	ALandFormPawn* Spawner;
 
-	UFUNCTION(BlueprintCallable)
-	ALandFormPawn* GetStartLand();
+	//前往目标点使用的路线，用以选路
+	UPROPERTY(BlueprintReadWrite)
+	ATrack* ComingTrack;
+
+	//当前所在线路，用于操作移动
+	UPROPERTY(BlueprintReadWrite)
+	ATrack* CurrentTrack;
 
 	//if need Initialize
 	UFUNCTION(BlueprintCallable)
