@@ -79,11 +79,6 @@ void AInGamePlayerControllerBase::OnSelectReleased()
 {
 }
 
-AStartPoint* AInGamePlayerControllerBase::GetPlayerStartPoint()
-{
-	return nullptr;
-}
-
 void AInGamePlayerControllerBase::SetPlayerStartPoint()
 {
 	UWorld* World = GetWorld();
@@ -95,7 +90,8 @@ void AInGamePlayerControllerBase::SetPlayerStartPoint()
 		auto StartPoint = static_cast<APlayerStart*>(actor);
 		if (IsValid(StartPoint))
 		{
-			//SetActorLocation(StartPoint->GetActorLocation());
+			const auto Camera = GetPawn();
+			Camera->SetActorLocation(StartPoint->GetActorLocation());
 		}
 	}
 }
@@ -134,3 +130,13 @@ void AInGamePlayerControllerBase::LoginData_Server_Implementation(int32 PlayerMa
 		}
 	}
 }
+
+void AInGamePlayerControllerBase::SetCurrentShowingUI(UUserWidget* UIWidget)
+{
+	if (CurrentUI)
+	{
+		CurrentUI->RemoveFromParent();
+	}
+	CurrentUI = UIWidget;
+}
+

@@ -74,6 +74,7 @@ void AInBattleGameState::ExecSubStateChange(EInGameSubState OldValue)
 	}
 	//服务器进行倒计时计算
 	StateTimeOutTimerStart();
+	UE_LOG(LogTemp, Display, TEXT("ExecSubStateChange --- %d"), StateStruct.SubState);
 }
 
 

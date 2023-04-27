@@ -94,7 +94,7 @@ public:
 	TMap<EInGameSubState,FSubStateWithDelegate> SubStateMap;
 	
 
-#pragma region >>> Game Base Variables
+#pragma region >>> Game Base Variables //Check 方法只在服务器执行，start和end方法在每一个端执行
 
 	//用以配置当前关卡出场单位
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)

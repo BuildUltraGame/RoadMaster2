@@ -49,6 +49,10 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	float UnitInterval;
 
+	//是否是可拖拽单位
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	bool IsDragAble;
+	
 	//关联的Unit
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TSubclassOf<AMovableUnits> UnitClass;

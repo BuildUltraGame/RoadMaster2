@@ -4,6 +4,7 @@
 #include "InGamePlayerStateBase.h"
 
 #include "Net/UnrealNetwork.h"
+#include "RoadMaster2/PlayerController/InGamePlayerControllerBase.h"
 
 void AInGamePlayerStateBase::BeginPlay()
 {
@@ -39,6 +40,11 @@ void AInGamePlayerStateBase::OnRep_Fund()
 
 void AInGamePlayerStateBase::InitialPlayerState()
 {
+	auto PC = static_cast<AInGamePlayerControllerBase*>(GetPlayerController());
+	if (IsValid(PC))
+	{
+		PC->SetPlayerStartPoint();
+	}
 	IsPlayerStateInit = true;
 }
 

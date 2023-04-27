@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InputActionValue.h"
+#include "Blueprint/UserWidget.h"
 #include "GameFramework/PlayerController.h"
 #include "InGamePlayerControllerBase.generated.h"
 
@@ -32,13 +33,42 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* SelectAction;
+#pragma region UIs
+	
+	//主UI
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	TSubclassOf<UUserWidget> BattleMainUI;
+	
+	//暂停UI
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	TSubclassOf<UUserWidget> SuspendUI;
+	
+	//结束UI
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	TSubclassOf<UUserWidget> BattleEndUI;
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void OpenBattleHUD();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void OpenSuspendHUD();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void OpenEndHUD();
+	
+	//设置当前的唯一主UI.同时只会有一个UI存在
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentShowingUI(UUserWidget* UIWidget);
+	
+	UPROPERTY(BlueprintReadOnly)
+	UUserWidget* CurrentUI;
+
+#pragma  endregion UIs
+
 	
 	//标记匹配进来的玩家序号
 	UPROPERTY(BlueprintReadWrite)
 	int32 PlayerIndex;
-	
-	UFUNCTION(BlueprintCallable)
-	AStartPoint* GetPlayerStartPoint();
 
 	UFUNCTION(BlueprintCallable)
 	void SetPlayerStartPoint();
