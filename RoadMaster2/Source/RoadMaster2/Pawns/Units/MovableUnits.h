@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/DefaultPawn.h"
-#include "RoadMaster2/Component/NavigationComponent.h"
 #include "MovableUnits.generated.h"
 
 class ATrack;

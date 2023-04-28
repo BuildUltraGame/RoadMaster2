@@ -4,6 +4,7 @@
 #include "LandFormPawn.h"
 #include "RoadMaster2/Pawns/Units/MovableUnits.h"
 #include "ShaderPrintParameters.h"
+#include "Components/SphereComponent.h"
 
 // Sets default values
 ALandFormPawn::ALandFormPawn()
@@ -35,6 +36,17 @@ void ALandFormPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
+void ALandFormPawn::OnCollision(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	auto ComingActor = static_cast<AMovableUnits*>(Other);
+	if (IsValid(ComingActor))
+	{
+		ExecUnitCollision(this);
+	}
+}
 
-
-
+void ALandFormPawn::ExecUnitCollision(ALandFormPawn* CurrentLandForm)
+{
+	
+}

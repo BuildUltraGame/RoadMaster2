@@ -47,10 +47,10 @@ void UUnitSpawnerComponent::SpawnUnit_Server_Implementation()
 
 void UUnitSpawnerComponent::ForceRefreshSpawnerNavigator(AMovableUnits* NewUnit)
 {
-	if (NewUnit&&NewUnit->CanBeLaunched)
-	{
-		ALandFormPawn* NextLandForm = LandFormOwner->GetTargetPointByInput(NewUnit);
-		NewUnit->Navigator->Navigate(LandFormOwner,NextLandForm);
-	}
+	// if (NewUnit&&NewUnit->CanBeLaunched)
+	// {
+	// 	ALandFormPawn* NextLandForm = LandFormOwner->GetTargetPointByInput(NewUnit);
+	// 	NewUnit->Navigator->Navigate(LandFormOwner,NextLandForm);
+	// }
 }
 

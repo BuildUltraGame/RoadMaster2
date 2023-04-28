@@ -4,10 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "RoadMaster2/Component/UnitLauncherComponent.h"
 #include "LandFormPawn.generated.h"
 
 class AMovableUnits;
+class USphereComponent;
+//
+// USTRUCT()
+// struct FConnectRoad
+// {
+// 	GENERATED_BODY()
+//
+// 	
+// };
+
+
 UCLASS()
 class ROADMASTER2_API ALandFormPawn : public APawn
 {
@@ -21,7 +31,11 @@ public:
 	USphereComponent* Collider;
 
 	UFUNCTION()
-	void OnCollision();
+	void OnCollision(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	//执行碰撞的覆写接口
+	UFUNCTION(BlueprintCallable)
+	virtual void ExecUnitCollision(ALandFormPawn* CurrentLandForm);
 	
 protected:
 	// Called when the game starts or when spawned

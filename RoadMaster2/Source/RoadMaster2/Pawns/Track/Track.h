@@ -3,14 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "LandFormPawn.h"
 #include "Track.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ROADMASTER2_API ATrack : public ALandFormPawn
+class ROADMASTER2_API ATrack : public APawn
 {
 	GENERATED_BODY()
 public:
