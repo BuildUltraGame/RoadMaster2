@@ -4,30 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "LandFormPawn.h"
-#include "StartPoint.generated.h"
+#include "MinerFactory.generated.h"
 
 class UUnitSpawnerComponent;
 /**
  * 
  */
 UCLASS()
-class ROADMASTER2_API AStartPoint : public ALandFormPawn
+class ROADMASTER2_API AMinerFactory : public ALandFormPawn
 {
 	GENERATED_BODY()
 public:
 	UPROPERTY(BlueprintReadWrite)
 	UUnitSpawnerComponent* UnitSpawner;
 
-/** Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* TestSpawnAction;
-
 	UFUNCTION(BlueprintCallable)
-	void SpawnUnit(const FInputActionValue& Value);
-	
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	void SpawnUnit();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void OnSelectStartPoint(UPrimitiveComponent* TouchedComponent ,FKey ButtonPressed);
 };

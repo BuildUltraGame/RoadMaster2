@@ -104,6 +104,9 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	TArray<AUnitInfoBase*> UnitInfos;
 
+	UFUNCTION(BlueprintCallable)
+	AUnitInfoBase* GetUnitInfoByID(int32 UnitID);
+	
 	//每个阶段的游戏时间
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	TMap<EInGameSubState,int> TimePerState;

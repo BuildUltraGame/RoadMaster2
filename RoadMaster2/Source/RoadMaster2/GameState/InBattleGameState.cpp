@@ -305,3 +305,8 @@ void AInBattleGameState::InitSubStateArray()
 		SubStateMap.Add(EnumValue,StateStruct);
 	}
 }
+
+AUnitInfoBase* AInBattleGameState::GetUnitInfoByID(int32 UnitID)
+{
+	
+}

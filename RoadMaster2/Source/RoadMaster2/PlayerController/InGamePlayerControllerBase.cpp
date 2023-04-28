@@ -10,6 +10,8 @@
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 #include "RoadMaster2/GameMode/InGameGameModeBase.h"
+#include "RoadMaster2/GameState/InBattleGameState.h"
+#include "RoadMaster2/Pawns/LandForm/MinerFactory.h"
 #include "RoadMaster2/SubSystem/RMGameInstanceSubsystem.h"
 
 
@@ -18,6 +20,7 @@ AInGamePlayerControllerBase::AInGamePlayerControllerBase()
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
+	CurrentFactory = nullptr;
 }
 
 void AInGamePlayerControllerBase::BeginPlay()
@@ -34,6 +37,7 @@ void AInGamePlayerControllerBase::BeginPlay()
 	LoadPCDataFromSubSys();
 }
 
+#pragma region Control functions
 
 void AInGamePlayerControllerBase::SetupInputComponent()
 {
@@ -79,6 +83,10 @@ void AInGamePlayerControllerBase::OnSelectReleased()
 {
 }
 
+#pragma endregion Control functions
+
+#pragma region Initial functions
+
 void AInGamePlayerControllerBase::SetPlayerStartPoint()
 {
 	UWorld* World = GetWorld();
@@ -96,12 +104,6 @@ void AInGamePlayerControllerBase::SetPlayerStartPoint()
 	}
 }
 
-UGameInstance* AInGamePlayerControllerBase::GetGameInstance()
-{
-	UWorld* World = GetWorld();
-	UGameInstance* GameInstance = World->GetGameInstance();
-	return  GameInstance;
-}
 
 void AInGamePlayerControllerBase::LoadPCDataFromSubSys()
 {
@@ -131,6 +133,15 @@ void AInGamePlayerControllerBase::LoginData_Server_Implementation(int32 PlayerMa
 	}
 }
 
+#pragma endregion Initial functions
+
+UGameInstance* AInGamePlayerControllerBase::GetGameInstance()
+{
+	UWorld* World = GetWorld();
+	UGameInstance* GameInstance = World->GetGameInstance();
+	return  GameInstance;
+}
+//切换当前UI
 void AInGamePlayerControllerBase::SetCurrentShowingUI(UUserWidget* UIWidget)
 {
 	if (CurrentUI)
@@ -138,5 +149,34 @@ void AInGamePlayerControllerBase::SetCurrentShowingUI(UUserWidget* UIWidget)
 		CurrentUI->RemoveFromParent();
 	}
 	CurrentUI = UIWidget;
+	CurrentUI->SetVisibility(ESlateVisibility::Collapsed);
 }
 
+void AInGamePlayerControllerBase::SelectFactory(AMinerFactory* Factory)
+{
+	UWorld* World = GetWorld();
+	AInBattleGameState* GameState = World->GetGameState<AInBattleGameState>();
+	if (GameState->InGameSubState == EInGameSubState::GamePlay)
+	{
+		CurrentFactory = Factory;
+		if (IsValid(CurrentFactory))
+		{
+			CurrentUI->SetVisibility(ESlateVisibility::Visible);
+		}
+		else
+		{
+			CurrentUI->SetVisibility(ESlateVisibility::Collapsed);
+		}
+	}	
+}
+
+void AInGamePlayerControllerBase::SpawnUnit(FVector Destination, int32 UnitID)
+{
+	if (CurrentFactory == nullptr)
+	{
+		return;
+	}
+	UWorld* World = GetWorld();
+	AInBattleGameState* GameState = World->GetGameState<AInBattleGameState>();
+	auto UnitInfo = GameState->UnitInfos
+}

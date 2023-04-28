@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "LandFormPawn.h"
-#include "EndPoint.generated.h"
+#include "Destination.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ROADMASTER2_API AEndPoint : public ALandFormPawn
+class ROADMASTER2_API ADestination : public ALandFormPawn
 {
 	GENERATED_BODY()
 	

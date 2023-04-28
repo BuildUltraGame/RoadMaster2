@@ -8,7 +8,7 @@
 #include "GameFramework/PlayerController.h"
 #include "InGamePlayerControllerBase.generated.h"
 
-class AStartPoint;
+class AMinerFactory;
 class UNiagaraSystem;
 
 /**
@@ -70,6 +70,15 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	int32 PlayerIndex;
 
+	UPROPERTY(BlueprintReadWrite)
+	AMinerFactory* CurrentFactory;
+
+	UFUNCTION(BlueprintCallable)
+	void SelectFactory(AMinerFactory* Factory);
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnUnit(FVector Destination,int32 UnitID);
+	
 	UFUNCTION(BlueprintCallable)
 	void SetPlayerStartPoint();
 	

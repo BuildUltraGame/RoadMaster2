@@ -14,6 +14,7 @@ ALandFormPawn::ALandFormPawn()
 	Collider = CreateDefaultSubobject<USphereComponent>(TEXT("UnitLauncher"));
 	Collider->SetupAttachment(RootComponent);
 	Collider->OnComponentBeginOverlap.AddDynamic(this,&ALandFormPawn::OnCollision);
+	PlayerIndex = -1;
 }
 
 // Called when the game starts or when spawned

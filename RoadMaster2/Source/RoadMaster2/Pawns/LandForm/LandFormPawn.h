@@ -6,16 +6,25 @@
 #include "GameFramework/Pawn.h"
 #include "LandFormPawn.generated.h"
 
+class ATrafficSignActor;
+class ATrack;
 class AMovableUnits;
 class USphereComponent;
-//
-// USTRUCT()
-// struct FConnectRoad
-// {
-// 	GENERATED_BODY()
-//
-// 	
-// };
+
+USTRUCT(BlueprintType)
+struct FConnectedTrack
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere,meta = (Tooltip = "道路"))
+	ATrack* Track;
+
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere,meta = (Tooltip = "路标"))
+	ATrafficSignActor* Sign;
+
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere,meta = (Tooltip = "是否阻塞"))
+	bool IsJam = false;
+};
 
 
 UCLASS()
@@ -29,6 +38,12 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	USphereComponent* Collider;
+
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere)
+	TArray<FConnectedTrack> ConnectedTrackList;
+
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere,meta = (Tooltip = "玩家所属的Index"))
+	int32 PlayerIndex;
 
 	UFUNCTION()
 	void OnCollision(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
