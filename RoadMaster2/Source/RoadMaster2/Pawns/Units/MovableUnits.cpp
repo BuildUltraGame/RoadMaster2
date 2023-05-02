@@ -3,6 +3,10 @@
 
 #include "MovableUnits.h"
 
+#include "Components/SphereComponent.h"
+#include "Net/UnrealNetwork.h"
+#include "RoadMaster2/Pawns/LandForm/LandFormPawn.h"
+
 // Sets default values
 AMovableUnits::AMovableUnits()
 {
@@ -15,7 +19,9 @@ AMovableUnits::AMovableUnits()
 void AMovableUnits::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	Collider = CreateDefaultSubobject<USphereComponent>(TEXT("UnitLauncher"));
+	Collider->SetupAttachment(RootComponent);
+	Collider->OnComponentBeginOverlap.AddDynamic(this,&AMovableUnits::OnCollision);
 }
 
 // Called every frame
@@ -25,6 +31,18 @@ void AMovableUnits::Tick(float DeltaTime)
 
 }
 
+void AMovableUnits::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AMovableUnits,MustMoveOnLine);
+	DOREPLIFETIME(AMovableUnits,LinearSpeed);
+	DOREPLIFETIME(AMovableUnits,Spawner);
+	DOREPLIFETIME(AMovableUnits,ComingTrack);
+	DOREPLIFETIME(AMovableUnits,CurrentTrack);
+	DOREPLIFETIME(AMovableUnits,Destination);
+	DOREPLIFETIME(AMovableUnits,PlayerIndex);
+}
+
 // Called to bind functionality to input
 void AMovableUnits::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -32,7 +50,15 @@ void AMovableUnits::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 }
 
-void AMovableUnits::InitUnitByType(ALandFormPawn* StartLand)
+void AMovableUnits::InitUnitByType(ALandFormPawn* StartLand, FVector InDestination)
 {
 	Spawner = StartLand;
+	Destination = InDestination;
+	PlayerIndex = StartLand->PlayerIndex;
+}
+
+void AMovableUnits::OnCollision(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	
 }

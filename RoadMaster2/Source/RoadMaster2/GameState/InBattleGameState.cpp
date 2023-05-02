@@ -308,5 +308,12 @@ void AInBattleGameState::InitSubStateArray()
 
 AUnitInfoBase* AInBattleGameState::GetUnitInfoByID(int32 UnitID)
 {
-	
+	for (auto Info : UnitInfos)
+	{
+		if (Info->UnitID == UnitID)
+		{
+			return Info;
+		}
+	}
+	return nullptr;
 }

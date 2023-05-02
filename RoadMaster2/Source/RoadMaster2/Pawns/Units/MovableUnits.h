@@ -15,27 +15,43 @@ class ROADMASTER2_API AMovableUnits : public ADefaultPawn
 public:
 	// Sets default values for this pawn's properties
 	AMovableUnits();
+	
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,meta = (Tooltip = "该单位是否一定要沿路行驶"),Replicated)
+	bool MustMoveOnLine = true;
 
-	UPROPERTY(BlueprintReadWrite,EditAnywhere,meta = (Tooltip = "该单位是否一定要沿路行驶"))
-	bool MustMoveOnLine = false;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,meta = (Tooltip = "该单位是否在终点停止"),Replicated)
+	bool IsStopAtDestination = false;
 
-	UPROPERTY(BlueprintReadWrite,EditAnywhere,meta = (Tooltip = "单位线速度"))
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,meta = (Tooltip = "单位线速度"),Replicated)
 	int32 LinearSpeed;
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite,Replicated)
 	ALandFormPawn* Spawner;
 
 	//前往目标点使用的路线，用以选路
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite,Replicated)
 	ATrack* ComingTrack;
 
 	//当前所在线路，用于操作移动
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite,Replicated)
 	ATrack* CurrentTrack;
 
 	//if need Initialize
 	UFUNCTION(BlueprintCallable)
-	virtual void InitUnitByType(ALandFormPawn* StartLand);
+	virtual void InitUnitByType(ALandFormPawn* StartLand,FVector InDestination);
+
+	UPROPERTY(Replicated)
+	FVector Destination;
+
+	UPROPERTY(Replicated)
+	int32 PlayerIndex;
+
+	UPROPERTY(BlueprintReadWrite)
+	USphereComponent* Collider;
+
+	UFUNCTION()
+	void OnCollision(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 	
 protected:
 	// Called when the game starts or when spawned
@@ -47,5 +63,7 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&) const override;
 
 };

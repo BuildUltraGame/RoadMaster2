@@ -7,11 +7,16 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "OnlineSubsystemTypes.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
+#include "RoadMaster2/Data/UnitInfoBase.h"
 #include "RoadMaster2/GameMode/InGameGameModeBase.h"
 #include "RoadMaster2/GameState/InBattleGameState.h"
 #include "RoadMaster2/Pawns/LandForm/MinerFactory.h"
+#include "RoadMaster2/Pawns/Units/MovableUnits.h"
+#include "RoadMaster2/Pawns/Units/WorkerUnit.h"
+#include "RoadMaster2/PlayerState/InGamePlayerStateBase.h"
 #include "RoadMaster2/SubSystem/RMGameInstanceSubsystem.h"
 
 
@@ -170,13 +175,39 @@ void AInGamePlayerControllerBase::SelectFactory(AMinerFactory* Factory)
 	}	
 }
 
-void AInGamePlayerControllerBase::SpawnUnit(FVector Destination, int32 UnitID)
+bool AInGamePlayerControllerBase::SpawnUnit(FVector Destination, int32 UnitID)
 {
+	//未选定
 	if (CurrentFactory == nullptr)
 	{
-		return;
+		return false;
 	}
 	UWorld* World = GetWorld();
 	AInBattleGameState* GameState = World->GetGameState<AInBattleGameState>();
-	auto UnitInfo = GameState->UnitInfos
+	//todo 由于CD 机制是老机制，这里相信UI层的CD,以后可以加校验
+	auto UnitInfo = GameState->GetUnitInfoByID(UnitID);
+	auto InGamePlayerState = static_cast<AInGamePlayerStateBase*>(PlayerState);
+	//资源不足
+	if (InGamePlayerState->Fund < UnitInfo->Cost)
+	{
+		return false;
+	}
+	if (UnitInfo)
+	{
+		SpawnUnit_Server(Destination,UnitID,CurrentFactory);
+		return true;
+	}
+	return false; 
+}
+
+void AInGamePlayerControllerBase::SpawnUnit_Server_Implementation(FVector Destination, int32 UnitID,
+	AMinerFactory* Factory)
+{
+	UWorld* World = GetWorld();
+	AInBattleGameState* GameState = World->GetGameState<AInBattleGameState>();
+	auto UnitInfo = GameState->GetUnitInfoByID(UnitID);
+	auto Location = Factory->GetActorLocation();
+	auto Rotation = Factory->GetActorRotation();
+	auto Unit = World->SpawnActor<AMovableUnits>(UnitInfo->UnitClass,Location,Rotation);
+	Unit->InitUnitByType(Factory,Destination);
 }

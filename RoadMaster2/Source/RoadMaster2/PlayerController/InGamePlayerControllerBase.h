@@ -77,7 +77,10 @@ public:
 	void SelectFactory(AMinerFactory* Factory);
 
 	UFUNCTION(BlueprintCallable)
-	void SpawnUnit(FVector Destination,int32 UnitID);
+	bool SpawnUnit(FVector Destination,int32 UnitID);
+
+	UFUNCTION(Server,Reliable)
+	void SpawnUnit_Server(FVector Destination,int32 UnitID,AMinerFactory* Factory);
 	
 	UFUNCTION(BlueprintCallable)
 	void SetPlayerStartPoint();
