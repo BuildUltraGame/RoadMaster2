@@ -16,34 +16,33 @@ public:
 	// Sets default values for this pawn's properties
 	AMovableUnits();
 	
-	UPROPERTY(BlueprintReadWrite,EditAnywhere,meta = (Tooltip = "该单位是否一定要沿路行驶"),Replicated)
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,meta = (Tooltip = "该单位是否一定要沿路行驶"))
 	bool MustMoveOnLine = true;
 
-	UPROPERTY(BlueprintReadWrite,EditAnywhere,meta = (Tooltip = "该单位是否在终点停止"),Replicated)
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,meta = (Tooltip = "该单位是否在终点停止"))
 	bool IsStopAtDestination = false;
+
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,meta = (Tooltip = "该单位是否能被阻挡"))
+	bool JamAble = false;
 
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,meta = (Tooltip = "单位线速度"),Replicated)
 	int32 LinearSpeed;
 
-	UPROPERTY(BlueprintReadWrite,Replicated)
+	UPROPERTY(BlueprintReadWrite)
 	ALandFormPawn* Spawner;
 
-	//前往目标点使用的路线，用以选路
-	UPROPERTY(BlueprintReadWrite,Replicated)
-	ATrack* ComingTrack;
-
-	//当前所在线路，用于操作移动
+	//当前所在线路，用以选路\操作移动
 	UPROPERTY(BlueprintReadWrite,Replicated)
 	ATrack* CurrentTrack;
 
 	//if need Initialize
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable,NetMulticast,Reliable)
 	virtual void InitUnitByType(ALandFormPawn* StartLand,FVector InDestination);
 
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	FVector Destination;
 
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	int32 PlayerIndex;
 
 	UPROPERTY(BlueprintReadWrite)
@@ -52,6 +51,8 @@ public:
 	UFUNCTION()
 	void OnCollision(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION(BlueprintCallable)
+	virtual void ExecUnitCollision(ALandFormPawn* LandForm);
 	
 protected:
 	// Called when the game starts or when spawned

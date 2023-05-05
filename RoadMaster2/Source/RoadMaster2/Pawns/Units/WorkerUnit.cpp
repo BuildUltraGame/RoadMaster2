@@ -8,6 +8,7 @@ void AWorkerUnit::InitUnitByType(ALandFormPawn* StartLand, FVector InDestination
 	Super::InitUnitByType(StartLand, InDestination);
 	MustMoveOnLine = true;
 	IsStopAtDestination = true;
+	JamAble = false;
 }
 
 void AWorkerUnit::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& LifetimeProperties) const

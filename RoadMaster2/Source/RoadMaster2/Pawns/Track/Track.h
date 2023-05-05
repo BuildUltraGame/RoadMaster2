@@ -5,6 +5,24 @@
 #include "CoreMinimal.h"
 #include "Track.generated.h"
 
+USTRUCT(BlueprintType)
+struct FUnitMoveState
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(BlueprintReadWrite)
+	AMovableUnits* Unit;
+
+	UPROPERTY(BlueprintReadWrite)
+	int32 Direction;
+
+	UPROPERTY(BlueprintReadWrite)
+	float CurrentMoveTime;
+
+	UPROPERTY(BlueprintReadWrite)
+	float MaxMoveTime;
+};
+
 /**
  * 
  */
@@ -22,10 +40,20 @@ public:
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category = "SplineLine")
 	class UTimelineComponent* TimelineComponent;	
 
-	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category = "SplineLine")
-	TArray<AMovableUnits*> UnitList;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category = "SplineLine",Replicated)
+	TArray<FUnitMoveState> UnitMoveList;
 
 	//获取方向值，+1为从起点进入，-1为从终点进入
 	UFUNCTION(BlueprintCallable)
 	int32 GetDirectionIntForUnit(AMovableUnits* unit);
+
+	UFUNCTION(BlueprintCallable)
+	void AddUnitToTrack(AMovableUnits* unit);
+
+	UFUNCTION(BlueprintCallable)
+	void RemoveUnitFromTrack(AMovableUnits* unit);
+
+	virtual void Tick(float DeltaSeconds) override;
+
+	
 };

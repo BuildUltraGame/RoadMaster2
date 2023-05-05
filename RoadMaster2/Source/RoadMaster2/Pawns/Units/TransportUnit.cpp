@@ -8,6 +8,7 @@ void ATransportUnit::InitUnitByType(ALandFormPawn* StartLand, FVector InDestinat
 	Super::InitUnitByType(StartLand, InDestination);
 	MustMoveOnLine = true;
 	IsStopAtDestination = true;
+	JamAble = true;
 }
 
 void ATransportUnit::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& LifetimeProperties) const

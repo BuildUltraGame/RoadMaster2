@@ -36,13 +36,13 @@ public:
 	// Sets default values for this pawn's properties
 	ALandFormPawn();
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite,Replicated)
 	USphereComponent* Collider;
 
-	UPROPERTY(BlueprintReadWrite,VisibleAnywhere)
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere,Replicated)
 	TArray<FConnectedTrack> ConnectedTrackList;
 
-	UPROPERTY(BlueprintReadWrite,VisibleAnywhere,meta = (Tooltip = "玩家所属的Index"))
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere,meta = (Tooltip = "玩家所属的Index"),Replicated)
 	int32 PlayerIndex;
 
 	UFUNCTION()
@@ -50,7 +50,7 @@ public:
 
 	//执行碰撞的覆写接口
 	UFUNCTION(BlueprintCallable)
-	virtual void ExecUnitCollision(ALandFormPawn* CurrentLandForm);
+	virtual void ExecUnitCollision(AMovableUnits* Unit);
 	
 protected:
 	// Called when the game starts or when spawned
@@ -62,5 +62,7 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	
 
 };

@@ -5,6 +5,7 @@
 
 #include "Components/SplineComponent.h"
 #include "Components/TimelineComponent.h"
+#include "Net/UnrealNetwork.h"
 #include "RoadMaster2/Pawns/Units/MovableUnits.h"
 
 ATrack::ATrack()
@@ -13,6 +14,14 @@ ATrack::ATrack()
 	TimelineComponent = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimelineComponent"));
 	SplineComponent->SetupAttachment(RootComponent);
 }
+
+
+void ATrack::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ATrack,UnitMoveList);
+}
+
 
 int32 ATrack::GetDirectionIntForUnit(AMovableUnits* unit)
 {
@@ -32,4 +41,57 @@ int32 ATrack::GetDirectionIntForUnit(AMovableUnits* unit)
 	}
 	UE_LOG(LogTemp, Display, TEXT("GetDirectionIntForUnit --- No Splite Line"));
 	return 0;
+}
+
+void ATrack::AddUnitToTrack(AMovableUnits* unit)
+{	
+	if (IsValid(unit))
+	{
+		for (auto Element : UnitMoveList)
+		{
+			if (Element.Unit == unit)
+			{
+				//不做重复的添加
+				return;
+			}
+		}
+		FUnitMoveState MoveState;
+		MoveState.Unit = unit;
+		MoveState.Direction = GetDirectionIntForUnit(unit);
+		MoveState.CurrentMoveTime = 0;
+		float TotalDistance = SplineComponent->GetSplineLength();
+		MoveState.MaxMoveTime = TotalDistance/unit->LinearSpeed;
+		
+		UnitMoveList.Add(MoveState);
+	}
+}
+
+void ATrack::RemoveUnitFromTrack(AMovableUnits* unit)
+{
+	int32 i = 0;
+	for (auto Element : UnitMoveList)
+	{
+		if (Element.Unit == unit)
+		{
+			UnitMoveList.RemoveAt(i);
+			return;
+		}
+		i++;
+	}
+}
+
+void ATrack::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	float TotalDistance = SplineComponent->GetSplineLength();
+	for (auto MoveState : UnitMoveList)
+	{
+		//运动到头仍未被移除，按道理应该不会有这种情况
+		if (MoveState.CurrentMoveTime>=MoveState.MaxMoveTime)
+		{
+			RemoveUnitFromTrack(MoveState.Unit);
+		}
+		MoveState.CurrentMoveTime = MoveState.CurrentMoveTime + DeltaSeconds;
+		//移动路线上的unit
+	}
 }

@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "RoadMaster2/Pawns/LandForm/LandFormPawn.h"
+#include "RoadMaster2/Pawns/Track/Track.h"
 
 // Sets default values
 AMovableUnits::AMovableUnits()
@@ -34,13 +35,8 @@ void AMovableUnits::Tick(float DeltaTime)
 void AMovableUnits::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(AMovableUnits,MustMoveOnLine);
 	DOREPLIFETIME(AMovableUnits,LinearSpeed);
-	DOREPLIFETIME(AMovableUnits,Spawner);
-	DOREPLIFETIME(AMovableUnits,ComingTrack);
 	DOREPLIFETIME(AMovableUnits,CurrentTrack);
-	DOREPLIFETIME(AMovableUnits,Destination);
-	DOREPLIFETIME(AMovableUnits,PlayerIndex);
 }
 
 // Called to bind functionality to input
@@ -50,7 +46,7 @@ void AMovableUnits::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 }
 
-void AMovableUnits::InitUnitByType(ALandFormPawn* StartLand, FVector InDestination)
+void AMovableUnits::InitUnitByType_Implementation(ALandFormPawn* StartLand, FVector InDestination)
 {
 	Spawner = StartLand;
 	Destination = InDestination;
@@ -60,5 +56,57 @@ void AMovableUnits::InitUnitByType(ALandFormPawn* StartLand, FVector InDestinati
 void AMovableUnits::OnCollision(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	
+	//服务器上结算碰撞
+	if (GIsServer)
+	{
+		auto ComingActor = static_cast<ALandFormPawn*>(Other);
+		if (IsValid(ComingActor))
+		{
+			ExecUnitCollision(ComingActor);
+		}
+	}	
+}
+
+void AMovableUnits::ExecUnitCollision(ALandFormPawn* LandForm)
+{
+	if (MustMoveOnLine)
+	{
+		FConnectedTrack* LeavingTrack = nullptr;
+		if (LandForm->ConnectedTrackList.Num()>0)
+		{
+			for (auto ConnectedTrack : LandForm->ConnectedTrackList)
+			{
+				//不会被阻塞 todo 有点难以判断该情况
+				if (!JamAble)
+				{
+					
+				}
+				//来路不通
+				if (CurrentTrack == ConnectedTrack.Track && ConnectedTrack.IsJam)
+				{
+					LeavingTrack = &ConnectedTrack;
+					break;
+				}
+				//去路不通
+				if (ConnectedTrack.IsJam)
+				{
+					continue;
+				}
+				//去路可通，遍历至最后一个不做break
+				if (ConnectedTrack.Track != CurrentTrack)
+				{
+					LeavingTrack = &ConnectedTrack;
+				}
+			}
+		}
+		//无路可走 返回
+		if (LeavingTrack == nullptr)
+		{
+			UE_LOG(LogTemp, Display, TEXT("ExecUnitCollision No Place To Go!"));
+			return;
+		}
+		//处理转线操作
+		CurrentTrack = LeavingTrack->Track;
+		CurrentTrack->AddUnitToTrack(this);
+	}	
 }

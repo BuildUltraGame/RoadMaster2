@@ -5,6 +5,7 @@
 #include "RoadMaster2/Pawns/Units/MovableUnits.h"
 #include "ShaderPrintParameters.h"
 #include "Components/SphereComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ALandFormPawn::ALandFormPawn()
@@ -15,6 +16,15 @@ ALandFormPawn::ALandFormPawn()
 	Collider->SetupAttachment(RootComponent);
 	Collider->OnComponentBeginOverlap.AddDynamic(this,&ALandFormPawn::OnCollision);
 	PlayerIndex = -1;
+}
+
+
+void ALandFormPawn::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ALandFormPawn,Collider);
+	DOREPLIFETIME(ALandFormPawn,ConnectedTrackList);
+	DOREPLIFETIME(ALandFormPawn,PlayerIndex);
 }
 
 // Called when the game starts or when spawned
@@ -40,14 +50,11 @@ void ALandFormPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 void ALandFormPawn::OnCollision(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	auto ComingActor = static_cast<AMovableUnits*>(Other);
-	if (IsValid(ComingActor))
-	{
-		ExecUnitCollision(this);
-	}
+	
 }
 
-void ALandFormPawn::ExecUnitCollision(ALandFormPawn* CurrentLandForm)
+void ALandFormPawn::ExecUnitCollision(AMovableUnits* Unit)
 {
+	
 	
 }
