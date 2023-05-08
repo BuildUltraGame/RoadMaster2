@@ -3,6 +3,8 @@
 
 #include "WorkerUnit.h"
 
+#include "RoadMaster2/Pawns/LandForm/LandFormPawn.h"
+
 void AWorkerUnit::InitUnitByType(ALandFormPawn* StartLand, FVector InDestination)
 {
 	Super::InitUnitByType(StartLand, InDestination);
@@ -14,4 +16,14 @@ void AWorkerUnit::InitUnitByType(ALandFormPawn* StartLand, FVector InDestination
 void AWorkerUnit::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& LifetimeProperties) const
 {
 	Super::GetLifetimeReplicatedProps(LifetimeProperties);
+}
+
+bool AWorkerUnit::ExecUnitToLandformEffect(ALandFormPawn* LandForm)
+{
+	//扳动道闸
+	if (LandForm->WorkAble)
+	{
+		
+	}
+	return Super::ExecUnitToLandformEffect(LandForm);
 }

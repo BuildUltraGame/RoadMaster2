@@ -53,6 +53,10 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (Tooltip = "单位组间间隔时间"))
 	float UnitInterval;
 
+	//单位得分
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (Tooltip = "单位得分"))
+	int32 Score;
+
 	//是否是可拖拽单位
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (Tooltip = "单位是否可拖拽"))
 	bool IsDragAble;

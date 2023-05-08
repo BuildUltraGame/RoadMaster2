@@ -42,6 +42,10 @@ public:
 	UPROPERTY(BlueprintReadWrite,VisibleAnywhere,Replicated)
 	TArray<FConnectedTrack> ConnectedTrackList;
 
+	//是否可以被操作
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere)
+	bool WorkAble;
+
 	UPROPERTY(BlueprintReadWrite,VisibleAnywhere,meta = (Tooltip = "玩家所属的Index"),Replicated)
 	int32 PlayerIndex;
 
@@ -51,6 +55,10 @@ public:
 	//执行碰撞的覆写接口
 	UFUNCTION(BlueprintCallable)
 	virtual void ExecUnitCollision(AMovableUnits* Unit);
+
+	//在unit执行转线前的地形操作
+	UFUNCTION(BlueprintCallable)
+	virtual bool ExecLandformEffect(AMovableUnits* Unit);
 	
 protected:
 	// Called when the game starts or when spawned

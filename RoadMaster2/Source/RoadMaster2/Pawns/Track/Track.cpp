@@ -83,15 +83,32 @@ void ATrack::RemoveUnitFromTrack(AMovableUnits* unit)
 void ATrack::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	float TotalDistance = SplineComponent->GetSplineLength();
-	for (auto MoveState : UnitMoveList)
+	if (GIsServer)
 	{
-		//运动到头仍未被移除，按道理应该不会有这种情况
-		if (MoveState.CurrentMoveTime>=MoveState.MaxMoveTime)
+		float TotalDistance = SplineComponent->GetSplineLength();
+		for (auto MoveState : UnitMoveList)
 		{
-			RemoveUnitFromTrack(MoveState.Unit);
+			//运动到头仍未被移除，按道理应该不会有这种情况
+			if (MoveState.CurrentMoveTime>=MoveState.MaxMoveTime)
+			{
+				RemoveUnitFromTrack(MoveState.Unit);
+			}
+			MoveState.CurrentMoveTime = MoveState.CurrentMoveTime + DeltaSeconds;
+			//移动路线上的unit
+			float CurrentDistance = 0;
+			if (MoveState.Direction == 1)
+			{
+				CurrentDistance = MoveState.CurrentMoveTime * MoveState.Unit->LinearSpeed;
+			}
+			if (MoveState.Direction == -1)
+			{
+				CurrentDistance = TotalDistance - MoveState.CurrentMoveTime * MoveState.Unit->LinearSpeed;
+			}
+			FVector CurrentLocation = SplineComponent->GetLocationAtDistanceAlongSpline(CurrentDistance,ESplineCoordinateSpace::World);
+			FRotator CurrentRotation = SplineComponent->GetRotationAtDistanceAlongSpline(CurrentDistance,ESplineCoordinateSpace::World);
+			// 设置物体位置
+			MoveState.Unit->SetActorLocation(CurrentLocation);
+			MoveState.Unit->SetActorRotation(CurrentRotation);
 		}
-		MoveState.CurrentMoveTime = MoveState.CurrentMoveTime + DeltaSeconds;
-		//移动路线上的unit
-	}
+	}	
 }

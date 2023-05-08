@@ -209,5 +209,5 @@ void AInGamePlayerControllerBase::SpawnUnit_Server_Implementation(FVector Destin
 	auto Location = Factory->GetActorLocation();
 	auto Rotation = Factory->GetActorRotation();
 	auto Unit = World->SpawnActor<AMovableUnits>(UnitInfo->UnitClass,Location,Rotation);
-	Unit->InitUnitByType(Factory,Destination);
+	Unit->InitUnitByType(Factory,Destination,UnitID);
 }

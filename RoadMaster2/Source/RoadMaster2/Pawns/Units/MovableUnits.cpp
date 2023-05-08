@@ -46,11 +46,12 @@ void AMovableUnits::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 }
 
-void AMovableUnits::InitUnitByType_Implementation(ALandFormPawn* StartLand, FVector InDestination)
+void AMovableUnits::InitUnitByType_Implementation(ALandFormPawn* StartLand, FVector InDestination,int32 InUnitID)
 {
 	Spawner = StartLand;
 	Destination = InDestination;
 	PlayerIndex = StartLand->PlayerIndex;
+	UnitID = InUnitID;
 }
 
 void AMovableUnits::OnCollision(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp,
@@ -59,16 +60,29 @@ void AMovableUnits::OnCollision(UPrimitiveComponent* OverlappedComp, AActor* Oth
 	//服务器上结算碰撞
 	if (GIsServer)
 	{
-		auto ComingActor = static_cast<ALandFormPawn*>(Other);
-		if (IsValid(ComingActor))
+		auto EnterLandForm = static_cast<ALandFormPawn*>(Other);
+		if (IsValid(EnterLandForm))
 		{
-			ExecUnitCollision(ComingActor);
+			ExecUnitCollision(EnterLandForm);
 		}
 	}	
 }
 
 void AMovableUnits::ExecUnitCollision(ALandFormPawn* LandForm)
 {
+	//首先尝试断开上一条track的链接
+	if (IsValid(CurrentTrack))
+	{
+		CurrentTrack->RemoveUnitFromTrack(this);
+	}
+	//执行地形对单位的操作
+	if (LandForm->ExecLandformEffect(this))
+	{
+		return;
+	}
+	//执行单位对地形的操作
+	
+	//转线操作 优先级最低
 	if (MustMoveOnLine)
 	{
 		FConnectedTrack* LeavingTrack = nullptr;
@@ -109,4 +123,9 @@ void AMovableUnits::ExecUnitCollision(ALandFormPawn* LandForm)
 		CurrentTrack = LeavingTrack->Track;
 		CurrentTrack->AddUnitToTrack(this);
 	}	
+}
+
+bool AMovableUnits::ExecUnitToLandformEffect(ALandFormPawn* LandForm)
+{
+	return false;
 }

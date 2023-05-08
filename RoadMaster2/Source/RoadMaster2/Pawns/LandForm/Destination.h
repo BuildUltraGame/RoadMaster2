@@ -13,5 +13,10 @@ UCLASS()
 class ROADMASTER2_API ADestination : public ALandFormPawn
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual bool ExecLandformEffect(AMovableUnits* Unit) override;
+
+protected:
+	virtual void BeginPlay() override;
 };

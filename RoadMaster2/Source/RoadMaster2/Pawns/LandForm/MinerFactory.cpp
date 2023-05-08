@@ -8,6 +8,7 @@
 void AMinerFactory::BeginPlay()
 {
 	Collider->OnClicked.AddDynamic(this, &AMinerFactory::OnSelectStartPoint);
+	WorkAble = false;
 }
 
 void AMinerFactory::OnSelectStartPoint(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)

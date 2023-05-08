@@ -31,13 +31,16 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	ALandFormPawn* Spawner;
 
+	UPROPERTY(BlueprintReadOnly)
+	int32 UnitID;
+
 	//当前所在线路，用以选路\操作移动
 	UPROPERTY(BlueprintReadWrite,Replicated)
 	ATrack* CurrentTrack;
 
-	//if need Initialize
+	//if need Initialize todo 该方法在spawnactor之后被调用，需要注意其是否能被正常执行
 	UFUNCTION(BlueprintCallable,NetMulticast,Reliable)
-	virtual void InitUnitByType(ALandFormPawn* StartLand,FVector InDestination);
+	virtual void InitUnitByType(ALandFormPawn* StartLand,FVector InDestination,int32 InUnitID);
 
 	UPROPERTY()
 	FVector Destination;
@@ -53,6 +56,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void ExecUnitCollision(ALandFormPawn* LandForm);
+
+	UFUNCTION(BlueprintCallable)
+	virtual bool ExecUnitToLandformEffect(ALandFormPawn* LandForm);
 	
 protected:
 	// Called when the game starts or when spawned

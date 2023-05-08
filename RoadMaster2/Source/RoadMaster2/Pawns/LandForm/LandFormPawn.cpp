@@ -16,6 +16,7 @@ ALandFormPawn::ALandFormPawn()
 	Collider->SetupAttachment(RootComponent);
 	Collider->OnComponentBeginOverlap.AddDynamic(this,&ALandFormPawn::OnCollision);
 	PlayerIndex = -1;
+	WorkAble = true;
 }
 
 
@@ -31,7 +32,6 @@ void ALandFormPawn::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 void ALandFormPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -57,4 +57,9 @@ void ALandFormPawn::ExecUnitCollision(AMovableUnits* Unit)
 {
 	
 	
+}
+
+bool ALandFormPawn::ExecLandformEffect(AMovableUnits* Unit)
+{
+	return false;
 }
