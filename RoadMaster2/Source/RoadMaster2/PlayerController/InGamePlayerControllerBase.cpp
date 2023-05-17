@@ -95,7 +95,7 @@ void AInGamePlayerControllerBase::OnSelectReleased()
 void AInGamePlayerControllerBase::SetPlayerStartPoint()
 {
 	UWorld* World = GetWorld();
-	FName Tag = FName(*FString::Printf(TEXT("Player%d"),LocalPlayerIndex));
+	FName Tag = FName(*FString::Printf(TEXT("Player%d"),PlayerGamePosIndex));
 	TArray<AActor*> ActorArray;
 	UGameplayStatics::GetAllActorsWithTag(World,Tag,ActorArray);
 	for(auto actor: ActorArray)
@@ -118,9 +118,9 @@ void AInGamePlayerControllerBase::LoadPCDataFromSubSys()
 		auto RMSys = GameInstance->GetSubsystem<URMGameInstanceSubsystem>();
 		if (RMSys)
 		{
-			LocalPlayerIndex = RMSys->CurrentInMapIndex;
+			PlayerGamePosIndex = RMSys->CurrentInMapIndex;
 		}
-		LoginData_Server(LocalPlayerIndex);
+		LoginData_Server(PlayerGamePosIndex);
 	}	
 }
 
@@ -128,7 +128,7 @@ void AInGamePlayerControllerBase::LoginData_Server_Implementation(int32 PlayerMa
 {
 	if (GIsServer)
 	{
-		LocalPlayerIndex = PlayerIndex;
+		PlayerGamePosIndex = PlayerMapIndex;
 		UWorld* World = GetWorld();
 		auto GameMode = static_cast<AInGameGameModeBase*>(World->GetAuthGameMode());
 		if (GameMode)
@@ -209,5 +209,8 @@ void AInGamePlayerControllerBase::SpawnUnit_Server_Implementation(FVector Destin
 	auto Location = Factory->GetActorLocation();
 	auto Rotation = Factory->GetActorRotation();
 	auto Unit = World->SpawnActor<AMovableUnits>(UnitInfo->UnitClass,Location,Rotation);
-	Unit->InitUnitByType(Factory,Destination,UnitID);
+	Unit->Spawner = Factory;
+	Unit->Destination = Destination;
+	Unit->UnitID = UnitID;
+	Unit->PlayerIndex = PlayerGamePosIndex;
 }

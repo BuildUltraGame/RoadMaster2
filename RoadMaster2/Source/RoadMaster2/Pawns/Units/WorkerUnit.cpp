@@ -5,9 +5,8 @@
 
 #include "RoadMaster2/Pawns/LandForm/LandFormPawn.h"
 
-void AWorkerUnit::InitUnitByType(ALandFormPawn* StartLand, FVector InDestination)
+AWorkerUnit::AWorkerUnit()
 {
-	Super::InitUnitByType(StartLand, InDestination);
 	MustMoveOnLine = true;
 	IsStopAtDestination = true;
 	JamAble = false;

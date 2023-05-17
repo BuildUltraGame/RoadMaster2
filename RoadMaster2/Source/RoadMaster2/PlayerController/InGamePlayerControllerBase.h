@@ -66,10 +66,6 @@ public:
 #pragma  endregion UIs
 
 	
-	//标记匹配进来的玩家序号
-	UPROPERTY(BlueprintReadWrite)
-	int32 PlayerIndex;
-
 	UPROPERTY(BlueprintReadWrite)
 	AMinerFactory* CurrentFactory;
 
@@ -96,8 +92,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UGameInstance* GetGameInstance();
 
+	//标记匹配进来的玩家序号
 	UPROPERTY(BlueprintReadOnly,VisibleAnywhere)
-	int32 LocalPlayerIndex;
+	int32 PlayerGamePosIndex;
 
 	UFUNCTION(BlueprintCallable,Server,Reliable)
 	void LoginData_Server(int32 PlayerMapIndex);

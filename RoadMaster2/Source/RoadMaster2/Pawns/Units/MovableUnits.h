@@ -28,24 +28,20 @@ public:
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,meta = (Tooltip = "单位线速度"),Replicated)
 	int32 LinearSpeed;
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite,Replicated)
 	ALandFormPawn* Spawner;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly,Replicated)
 	int32 UnitID;
 
 	//当前所在线路，用以选路\操作移动
 	UPROPERTY(BlueprintReadWrite,Replicated)
 	ATrack* CurrentTrack;
 
-	//if need Initialize todo 该方法在spawnactor之后被调用，需要注意其是否能被正常执行
-	UFUNCTION(BlueprintCallable,NetMulticast,Reliable)
-	virtual void InitUnitByType(ALandFormPawn* StartLand,FVector InDestination,int32 InUnitID);
-
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	FVector Destination;
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	int32 PlayerIndex;
 
 	UPROPERTY(BlueprintReadWrite)

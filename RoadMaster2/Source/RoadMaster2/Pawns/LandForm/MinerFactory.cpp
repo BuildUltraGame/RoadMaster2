@@ -17,7 +17,7 @@ void AMinerFactory::OnSelectStartPoint(UPrimitiveComponent* TouchedComponent, FK
 	if (World)
 	{
 		auto PC = static_cast<AInGamePlayerControllerBase*>(World->GetFirstPlayerController());
-		if (PC->PlayerIndex == PlayerIndex)//是当前玩家 否则不能选中
+		if (PC->PlayerGamePosIndex == PlayerIndex)//是当前玩家 否则不能选中
 		{
 			PC->SelectFactory(this);
 		}

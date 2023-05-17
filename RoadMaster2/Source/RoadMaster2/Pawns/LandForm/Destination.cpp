@@ -21,11 +21,11 @@ bool ADestination::ExecLandformEffect(AMovableUnits* Unit)
 			auto World = GetWorld();
 			auto InGameState = World->GetGameState<AInBattleGameState>();
 			TArray<APlayerState*> PlayerStates = World->GetGameState()->PlayerArray;
-			for (auto PlayerState : PlayerStates)
+			for (APlayerState* InPlayerState : PlayerStates)
 			{
-				auto InGamePlayerState = static_cast<AInGamePlayerStateBase*>(PlayerState);
+				auto InGamePlayerState = static_cast<AInGamePlayerStateBase*>(InPlayerState);
 				auto InGamePlayerController = static_cast<AInGamePlayerControllerBase*>(InGamePlayerState->GetPlayerController());
-				if (InGamePlayerController->PlayerIndex == Unit->PlayerIndex)
+				if (InGamePlayerController->PlayerGamePosIndex == Unit->PlayerIndex)
 				{
 					auto Info = InGameState->GetUnitInfoByID(Unit->UnitID);
 					InGamePlayerState->GameScore = InGamePlayerState->GameScore + Info->Score;

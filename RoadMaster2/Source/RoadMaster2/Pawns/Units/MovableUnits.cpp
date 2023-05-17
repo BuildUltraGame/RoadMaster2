@@ -37,6 +37,10 @@ void AMovableUnits::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AMovableUnits,LinearSpeed);
 	DOREPLIFETIME(AMovableUnits,CurrentTrack);
+	DOREPLIFETIME(AMovableUnits,Spawner);
+	DOREPLIFETIME(AMovableUnits,Destination);
+	DOREPLIFETIME(AMovableUnits,PlayerIndex);
+	DOREPLIFETIME(AMovableUnits,UnitID);
 }
 
 // Called to bind functionality to input
@@ -46,16 +50,8 @@ void AMovableUnits::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 }
 
-void AMovableUnits::InitUnitByType_Implementation(ALandFormPawn* StartLand, FVector InDestination,int32 InUnitID)
-{
-	Spawner = StartLand;
-	Destination = InDestination;
-	PlayerIndex = StartLand->PlayerIndex;
-	UnitID = InUnitID;
-}
-
 void AMovableUnits::OnCollision(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//服务器上结算碰撞
 	if (GIsServer)
