@@ -47,14 +47,26 @@ public:
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	TSubclassOf<UUserWidget> BattleEndUI;
 	
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION()
 	void OpenBattleHUD();
 	
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION()
 	void OpenSuspendHUD();
 	
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION()
 	void OpenEndHUD();
+
+	//主UI
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	UUserWidget* BattleMainUIInstance;
+
+	//主UI
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	UUserWidget* SuspendUIInstance;
+
+	//主UI
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	UUserWidget* BattleEndUIInstance;
 	
 	//设置当前的唯一主UI.同时只会有一个UI存在
 	UFUNCTION(BlueprintCallable)
@@ -62,6 +74,18 @@ public:
 	
 	UPROPERTY(BlueprintReadOnly)
 	UUserWidget* CurrentUI;
+
+	UFUNCTION(BlueprintCallable)
+	void SelectUnitCard(int32 UnitID);
+
+	UFUNCTION(BlueprintCallable)
+	void UnSelectUnitCard();
+
+	UPROPERTY(BlueprintReadWrite)
+	bool IsCardSelected;
+
+	UPROPERTY(BlueprintReadWrite)
+	int32 CurSelectCardUnitID;
 
 #pragma  endregion UIs
 

@@ -33,9 +33,12 @@ class ROADMASTER2_API AUnitInfoBase : public AInfo
 {
 	GENERATED_BODY()
 public:
-	//单位消耗
+	//单位ID
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (Tooltip = "单位唯一ID"))
 	int32 UnitID;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (Tooltip = "单位名称"))
+	FString UnitName;
 	
 	//单位消耗
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (Tooltip = "单位消耗"))
