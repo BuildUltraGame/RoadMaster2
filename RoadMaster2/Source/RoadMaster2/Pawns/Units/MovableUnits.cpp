@@ -77,14 +77,17 @@ void AMovableUnits::ExecUnitCollision(ALandFormPawn* LandForm)
 		return;
 	}
 	//执行单位对地形的操作
-	
+	if (ExecUnitToLandformEffect(LandForm))
+	{
+		return;
+	}
 	//转线操作 优先级最低
 	if (MustMoveOnLine)
 	{
 		FConnectedTrack* LeavingTrack = nullptr;
 		if (LandForm->ConnectedTrackList.Num()>0)
 		{
-			for (auto ConnectedTrack : LandForm->ConnectedTrackList)
+			for (auto &ConnectedTrack : LandForm->ConnectedTrackList)
 			{
 				//不会被阻塞 todo 有点难以判断该情况
 				if (!JamAble)
