@@ -37,15 +37,15 @@ public:
 	
 	//主UI
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
-	TSubclassOf<UUserWidget> BattleMainUI;
+	TSubclassOf<URMCommandUserWidget> BattleMainUI;
 	
 	//暂停UI
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
-	TSubclassOf<UUserWidget> SuspendUI;
+	TSubclassOf<URMCommandUserWidget> SuspendUI;
 	
 	//结束UI
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
-	TSubclassOf<UUserWidget> BattleEndUI;
+	TSubclassOf<URMCommandUserWidget> BattleEndUI;
 	
 	UFUNCTION()
 	void OpenBattleHUD();
@@ -58,22 +58,22 @@ public:
 
 	//主UI
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
-	UUserWidget* BattleMainUIInstance;
+	URMCommandUserWidget* BattleMainUIInstance;
 
 	//主UI
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
-	UUserWidget* SuspendUIInstance;
+	URMCommandUserWidget* SuspendUIInstance;
 
 	//主UI
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
-	UUserWidget* BattleEndUIInstance;
+	URMCommandUserWidget* BattleEndUIInstance;
 	
 	//设置当前的唯一主UI.同时只会有一个UI存在
 	UFUNCTION(BlueprintCallable)
-	void SetCurrentShowingUI(UUserWidget* UIWidget);
+	void SetCurrentShowingUI(URMCommandUserWidget* UIWidget);
 	
 	UPROPERTY(BlueprintReadOnly)
-	UUserWidget* CurrentUI;
+	URMCommandUserWidget* CurrentUI;
 
 	UFUNCTION(BlueprintCallable)
 	void SelectUnitCard(int32 UnitID);
@@ -96,6 +96,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SelectFactory(AMinerFactory* Factory);
 
+	UFUNCTION(BlueprintCallable)
+	void UnSelectFactory();
+	
 	UFUNCTION(BlueprintCallable)
 	bool SpawnUnit(FVector Destination,int32 UnitID);
 

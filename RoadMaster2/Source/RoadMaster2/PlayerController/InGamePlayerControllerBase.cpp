@@ -14,7 +14,7 @@
 #include "RoadMaster2/Pawns/Units/MovableUnits.h"
 #include "RoadMaster2/PlayerState/InGamePlayerStateBase.h"
 #include "RoadMaster2/SubSystem/RMGameInstanceSubsystem.h"
-
+#include "RoadMaster2/UI/RMCommandUserWidget.h"
 
 
 AInGamePlayerControllerBase::AInGamePlayerControllerBase()
@@ -144,16 +144,7 @@ UGameInstance* AInGamePlayerControllerBase::GetGameInstance()
 	UGameInstance* GameInstance = World->GetGameInstance();
 	return  GameInstance;
 }
-//切换当前UI
-void AInGamePlayerControllerBase::SetCurrentShowingUI(UUserWidget* UIWidget)
-{
-	if (CurrentUI)
-	{
-		CurrentUI->RemoveFromParent();
-	}
-	CurrentUI = UIWidget;
-	CurrentUI->SetVisibility(ESlateVisibility::Collapsed);
-}
+
 
 
 bool AInGamePlayerControllerBase::SpawnUnit(FVector Destination, int32 UnitID)
@@ -198,31 +189,45 @@ void AInGamePlayerControllerBase::SpawnUnit_Server_Implementation(FVector Destin
 
 #pragma region UI
 
+//切换当前UI
+void AInGamePlayerControllerBase::SetCurrentShowingUI(URMCommandUserWidget* UIWidget)
+{
+	if (CurrentUI)
+	{
+		CurrentUI->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	CurrentUI = UIWidget;
+	CurrentUI->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+}
+
 void AInGamePlayerControllerBase::OpenBattleHUD()
 {
 	if (!IsValid(BattleMainUIInstance)&&IsValid(BattleMainUI))
 	{
-		BattleMainUIInstance = CreateWidget<UUserWidget>(this,BattleMainUI);
-		BattleMainUIInstance->AddToViewport();
+		BattleMainUIInstance = CreateWidget<URMCommandUserWidget>(this,BattleMainUI);
+		BattleMainUIInstance ->AddToViewport();
 	}
+	SetCurrentShowingUI(BattleMainUIInstance);
 }
 
 void AInGamePlayerControllerBase::OpenSuspendHUD()
 {
 	if (!IsValid(SuspendUIInstance)&&IsValid(SuspendUI))
 	{
-		SuspendUIInstance = CreateWidget<UUserWidget>(this,SuspendUI);
+		SuspendUIInstance = CreateWidget<URMCommandUserWidget>(this,SuspendUI);
 		SuspendUIInstance->AddToViewport();
 	}
+	SetCurrentShowingUI(SuspendUIInstance);
 }
 
 void AInGamePlayerControllerBase::OpenEndHUD()
 {
 	if (!IsValid(BattleEndUIInstance)&&IsValid(BattleEndUI))
 	{
-		BattleEndUIInstance = CreateWidget<UUserWidget>(this,BattleEndUI);
+		BattleEndUIInstance = CreateWidget<URMCommandUserWidget>(this,BattleEndUI);
 		BattleEndUIInstance->AddToViewport();
 	}
+	SetCurrentShowingUI(BattleEndUIInstance);
 }
 
 
@@ -243,12 +248,26 @@ void AInGamePlayerControllerBase::SelectFactory(AMinerFactory* Factory)
 		{
 			if (IsValid(CurrentFactory))
 			{
-				BattleMainUIInstance->SetVisibility(ESlateVisibility::Visible);
+				BattleMainUIInstance->ExecBluePrintCommand("ShowPanel");
 			}
 			else
 			{
-				BattleMainUIInstance->SetVisibility(ESlateVisibility::Collapsed);
+				BattleMainUIInstance->ExecBluePrintCommand("HidePanel");
 			}
+		}		
+	}	
+}
+
+void AInGamePlayerControllerBase::UnSelectFactory()
+{
+	UWorld* World = GetWorld();
+	AInBattleGameState* GameState = World->GetGameState<AInBattleGameState>();
+	if (GameState->InGameSubState == EInGameSubState::GamePlay)
+	{
+		CurrentFactory = nullptr;
+		if (IsValid(BattleMainUIInstance))
+		{
+			BattleMainUIInstance->ExecBluePrintCommand("HidePanel");
 		}		
 	}	
 }
@@ -257,6 +276,10 @@ void AInGamePlayerControllerBase::SelectUnitCard(int32 UnitID)
 {
 	CurSelectCardUnitID = UnitID;
 	IsCardSelected = true;
+	if (IsValid(BattleMainUIInstance))
+	{
+		BattleMainUIInstance->ExecBluePrintCommand("CardSelect");
+	}
 	// todo:可能需要判断拖拽效果
 }
 
@@ -264,6 +287,10 @@ void AInGamePlayerControllerBase::UnSelectUnitCard()
 {
 	CurSelectCardUnitID = 0;
 	IsCardSelected = false;
+	if (IsValid(BattleMainUIInstance))
+	{
+		BattleMainUIInstance->ExecBluePrintCommand("EndSelect");
+	}
 	// todo:可能需要判断拖拽效果
 }
 
