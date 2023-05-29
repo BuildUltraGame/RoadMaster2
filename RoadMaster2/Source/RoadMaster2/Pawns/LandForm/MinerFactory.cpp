@@ -13,7 +13,7 @@ void AMinerFactory::BeginPlay()
 
 void AMinerFactory::OnSelectStartPoint(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
 {
-	UWorld* World = GetWorld();
+	UWorld* World = GWorld;
 	if (World)
 	{
 		auto PC = static_cast<AInGamePlayerControllerBase*>(World->GetFirstPlayerController());

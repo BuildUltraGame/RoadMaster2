@@ -28,6 +28,12 @@ enum class EInGameSubState : uint8
 	End UMETA(DisplayName = "End"),
 };
 
+/// 状态管理：
+/// start为开始时执行的委托；
+/// end为结束时执行的委托；
+/// check为判断是否结束的委托；（仅在服务器执行）
+/// Getnext为获取下一个阶段的委托；
+
 ENUM_RANGE_BY_COUNT(EInGameSubState, EInGameSubState::End);
 
 //阶段开始时的委托

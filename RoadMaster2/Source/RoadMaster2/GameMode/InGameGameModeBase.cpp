@@ -78,7 +78,7 @@ void AInGameGameModeBase::UpdateGameplayMuteList(APlayerController* aPlayer)
 
 TArray<AInGamePlayerControllerBase*> AInGameGameModeBase::GetPlayerControllerList()
 {
-	UWorld* World = GetWorld();
+	UWorld* World = GWorld;
 	TArray<AInGamePlayerControllerBase*> PlayerList;
 	
 	for (TArray<TWeakObjectPtr<APlayerController> >::TConstIterator PCIterator = World->GetPlayerControllerIterator(); PCIterator; ++PCIterator)

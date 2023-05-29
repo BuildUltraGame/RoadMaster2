@@ -13,6 +13,8 @@
 void AInBattleGameState::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	CheckCurrentStateChange();
+	UE_LOG(LogTemp, Display, TEXT("AInBattleGameState::Tick"));
 }
 
 void AInBattleGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -35,6 +37,7 @@ AInBattleGameState::AInBattleGameState()
 			TimePerState.Add(SubState.Value.SubState,0);			
 		}
 	}
+	SetActorTickEnabled(true);
 }
 
 void AInBattleGameState::BeginPlay()
@@ -52,9 +55,12 @@ void AInBattleGameState::SetInGameSubState(EInGameSubState NewState)
 {
 	if (GIsServer)
 	{
+		UE_LOG(LogTemp, Display, TEXT("SetInGameSubState --- %d"), NewState);
 		if (InGameSubState != NewState)
 		{			
+			auto OldValue = InGameSubState;
 			InGameSubState = NewState;
+			ExecSubStateChange(OldValue);
 		}
 	}
 }
@@ -72,9 +78,9 @@ void AInBattleGameState::ExecSubStateChange(EInGameSubState OldValue)
 	{
 		StateStruct.StateStartDelegate.Execute(OldValue);
 	}
+	UE_LOG(LogTemp, Display, TEXT("ExecSubStateChange --- %d"), StateStruct.SubState);
 	//服务器进行倒计时计算
 	StateTimeOutTimerStart();
-	UE_LOG(LogTemp, Display, TEXT("ExecSubStateChange --- %d"), StateStruct.SubState);
 }
 
 
@@ -94,18 +100,22 @@ void AInBattleGameState::SubStateTimeOut()
 	}	
 }
 
-//超时计时器启动
+//超时计时器启动 当时间配置为0的时候不启动计时，当时间配置小于0的时候跳过该阶段
 void AInBattleGameState::StateTimeOutTimerStart()
 {
 	if (GIsServer)
 	{
 		if (TimerHandle.IsValid())
 		{
-			GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+			GWorld->GetTimerManager().ClearTimer(TimerHandle);
 		}
 		if (TimePerState[InGameSubState] > 0)
 		{
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AInBattleGameState::SubStateTimeOut, TimePerState[InGameSubState], false, 0);
+			GWorld->GetTimerManager().SetTimer(TimerHandle, this, &AInBattleGameState::SubStateTimeOut, TimePerState[InGameSubState], false, TimePerState[InGameSubState]);
+		}
+		if (TimePerState[InGameSubState] < 0)
+		{
+			SubStateTimeOut();
 		}
 	}
 }
@@ -144,8 +154,10 @@ bool AInBattleGameState::CheckConnect()
 {
 	if (GIsServer)
 	{
-		auto GameModeInstance = GetDefaultGameMode<AInGameGameModeBase>();
-		if (GameModeInstance->NumTravellingPlayers == 0)
+		UWorld* World = GWorld;
+		auto GameModeInstance = World->GetAuthGameMode();
+		auto InGameModeInstance = static_cast<AInGameGameModeBase*>(GameModeInstance);
+		if (InGameModeInstance->NumTravellingPlayers == 0)
 		{
 			return true;
 		}
@@ -162,7 +174,7 @@ void AInBattleGameState::StartInitialize(EInGameSubState OldState)
 	if (!UnitClassArray.IsEmpty())
 	{
 		//GameState初始化
-		UWorld* World = GetWorld();
+		UWorld* World = GWorld;
 		for (auto Element : UnitClassArray)
 		{
 			//复制CDO,覆盖配置,加入信息数组

@@ -23,7 +23,7 @@ void AOldVersionRMGameState::InitSubStateArray()
 void AOldVersionRMGameState::StartGamePlay(EInGameSubState OldState)
 {
 	IsToEndGame = false;
-	UWorld* World = GetWorld();
+	UWorld* World = GWorld;
 	auto PlayerController = static_cast<AInGamePlayerControllerBase*>(World->GetFirstPlayerController());
 	if (IsValid(PlayerController))
 	{

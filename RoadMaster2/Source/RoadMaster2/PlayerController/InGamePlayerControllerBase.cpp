@@ -92,7 +92,7 @@ void AInGamePlayerControllerBase::OnSelectReleased()
 
 void AInGamePlayerControllerBase::SetPlayerStartPoint()
 {
-	UWorld* World = GetWorld();
+	UWorld* World = GWorld;
 	FName Tag = FName(*FString::Printf(TEXT("Player%d"),PlayerGamePosIndex));
 	TArray<AActor*> ActorArray;
 	UGameplayStatics::GetAllActorsWithTag(World,Tag,ActorArray);
@@ -127,7 +127,7 @@ void AInGamePlayerControllerBase::LoginData_Server_Implementation(int32 PlayerMa
 	if (GIsServer)
 	{
 		PlayerGamePosIndex = PlayerMapIndex;
-		UWorld* World = GetWorld();
+		UWorld* World = GWorld;
 		auto GameMode = static_cast<AInGameGameModeBase*>(World->GetAuthGameMode());
 		if (GameMode)
 		{
@@ -140,7 +140,7 @@ void AInGamePlayerControllerBase::LoginData_Server_Implementation(int32 PlayerMa
 
 UGameInstance* AInGamePlayerControllerBase::GetGameInstance()
 {
-	UWorld* World = GetWorld();
+	UWorld* World = GWorld;
 	UGameInstance* GameInstance = World->GetGameInstance();
 	return  GameInstance;
 }
@@ -154,7 +154,7 @@ bool AInGamePlayerControllerBase::SpawnUnit(FVector Destination, int32 UnitID)
 	{
 		return false;
 	}
-	UWorld* World = GetWorld();
+	UWorld* World = GWorld;
 	AInBattleGameState* GameState = World->GetGameState<AInBattleGameState>();
 	//todo 由于CD 机制是老机制，这里相信UI层的CD,以后可以加校验
 	auto UnitInfo = GameState->GetUnitInfoByID(UnitID);
@@ -175,7 +175,7 @@ bool AInGamePlayerControllerBase::SpawnUnit(FVector Destination, int32 UnitID)
 void AInGamePlayerControllerBase::SpawnUnit_Server_Implementation(FVector Destination, int32 UnitID,
 	AMinerFactory* Factory)
 {
-	UWorld* World = GetWorld();
+	UWorld* World = GWorld;
 	AInBattleGameState* GameState = World->GetGameState<AInBattleGameState>();
 	auto UnitInfo = GameState->GetUnitInfoByID(UnitID);
 	auto Location = Factory->GetActorLocation();
@@ -233,7 +233,7 @@ void AInGamePlayerControllerBase::OpenEndHUD()
 
 void AInGamePlayerControllerBase::SelectFactory(AMinerFactory* Factory)
 {
-	UWorld* World = GetWorld();
+	UWorld* World = GWorld;
 	AInBattleGameState* GameState = World->GetGameState<AInBattleGameState>();
 	if (GameState->InGameSubState == EInGameSubState::GamePlay)
 	{
@@ -260,7 +260,7 @@ void AInGamePlayerControllerBase::SelectFactory(AMinerFactory* Factory)
 
 void AInGamePlayerControllerBase::UnSelectFactory()
 {
-	UWorld* World = GetWorld();
+	UWorld* World = GWorld;//注意：GetWorld()不一定有值，全局变量GWorld更稳一些
 	AInBattleGameState* GameState = World->GetGameState<AInBattleGameState>();
 	if (GameState->InGameSubState == EInGameSubState::GamePlay)
 	{

@@ -2,8 +2,8 @@
 
 
 #include "RMCommandUserWidget.h"
-//
-// int32 URMCommandUserWidget::ExecBluePrintCommand_Implementation(FString& Command)
-// {
-// 	return 0;
-// }
+
+int32 URMCommandUserWidget::ExecBluePrintCommand_Implementation(const FString& Command)
+{
+	return 0;
+}

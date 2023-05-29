@@ -61,7 +61,7 @@ void ARoadMaster2PlayerController::OnInputStarted()
 void ARoadMaster2PlayerController::OnSetDestinationTriggered()
 {
 	// We flag that the input is being pressed
-	FollowTime += GetWorld()->GetDeltaSeconds();
+	FollowTime += GWorld->GetDeltaSeconds();
 	
 	// We look for the location in the world where the player has pressed the input
 	FHitResult Hit;

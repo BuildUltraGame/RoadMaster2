@@ -44,7 +44,6 @@ void AInGamePlayerStateBase::InitialPlayerState()
 	if (IsValid(PC))
 	{
 		PC->SetPlayerStartPoint();
-		PC->OpenBattleHUD();
 	}
 	IsPlayerStateInit = true;
 }

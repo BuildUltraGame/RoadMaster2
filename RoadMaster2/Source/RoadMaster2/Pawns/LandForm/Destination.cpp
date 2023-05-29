@@ -18,7 +18,7 @@ bool ADestination::ExecLandformEffect(AMovableUnits* Unit)
 	{
 		if (Unit->PlayerIndex == PlayerIndex ||PlayerIndex == 0)
 		{
-			auto World = GetWorld();
+			auto World = GWorld;
 			auto InGameState = World->GetGameState<AInBattleGameState>();
 			TArray<APlayerState*> PlayerStates = World->GetGameState()->PlayerArray;
 			for (APlayerState* InPlayerState : PlayerStates)
