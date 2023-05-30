@@ -14,7 +14,6 @@ void AInBattleGameState::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	CheckCurrentStateChange();
-	UE_LOG(LogTemp, Display, TEXT("AInBattleGameState::Tick"));
 }
 
 void AInBattleGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -43,7 +42,7 @@ AInBattleGameState::AInBattleGameState()
 void AInBattleGameState::BeginPlay()
 {
 	Super::BeginPlay();
-	StateTimeOutTimerStart();
+	MinNetUpdateFrequency = 0.001f;
 }
 
 #pragma endregion
@@ -55,7 +54,7 @@ void AInBattleGameState::SetInGameSubState(EInGameSubState NewState)
 {
 	if (GIsServer)
 	{
-		UE_LOG(LogTemp, Display, TEXT("SetInGameSubState --- %d"), NewState);
+		UE_LOG(LogTemp, Display, TEXT("SetInGameSubState Server--- %d"), NewState);
 		if (InGameSubState != NewState)
 		{			
 			auto OldValue = InGameSubState;
@@ -67,6 +66,7 @@ void AInBattleGameState::SetInGameSubState(EInGameSubState NewState)
 
 void AInBattleGameState::OnRep_InGameSubState(EInGameSubState OldValue)
 {
+	UE_LOG(LogTemp, Display, TEXT("SetInGameSubState Client--- %d"), InGameSubState);
 	ExecSubStateChange(OldValue);
 }
 
@@ -167,6 +167,7 @@ bool AInBattleGameState::CheckConnect()
 
 void AInBattleGameState::EndConnect(bool IsTimeOut)
 {
+	StateTimeOutTimerStart();
 }
 
 void AInBattleGameState::StartInitialize(EInGameSubState OldState)

@@ -21,5 +21,5 @@ protected:
 	virtual void StartGamePlay(EInGameSubState OldState) override;
 	virtual bool CheckGamePlay() override;
 	virtual void EndGamePlay(bool IsTimeOut) override;
-	virtual EInGameSubState GetNextState(EInGameSubState CurState) override;
+	virtual EInGameSubState GetNextState(EInGameSubState CurState) override;	
 };
