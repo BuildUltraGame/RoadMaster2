@@ -23,3 +23,13 @@ bool URMBlueprintFunctionLibrary::IsServer()
 	}
 	return false;
 }
+
+APlayerController* URMBlueprintFunctionLibrary::GetLocalPlayerController()
+{
+	auto GameInstance = GWorld->GetGameInstance();
+	if (IsValid(GameInstance))
+	{
+		return GameInstance->GetFirstLocalPlayerController();
+	}
+	return nullptr;
+}

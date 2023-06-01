@@ -22,4 +22,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static bool IsServer();
+
+	UFUNCTION(BlueprintCallable)
+	static APlayerController* GetLocalPlayerController();
 };

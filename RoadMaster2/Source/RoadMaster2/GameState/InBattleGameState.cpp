@@ -210,7 +210,7 @@ void AInBattleGameState::StartInitialize(EInGameSubState OldState)
 			UnitInfos.Add(SubObj);
 		}
 		//PlayerState初始化
-		const auto OwnPC = World->GetFirstPlayerController();
+		const auto OwnPC = World->GetGameInstance()->GetFirstLocalPlayerController();
 		const auto OwnPlayerState = static_cast<AInGamePlayerStateBase*>(OwnPC->PlayerState);
 		if (IsValid(OwnPlayerState))
 		{
@@ -223,19 +223,12 @@ bool AInBattleGameState::CheckInitialize()
 {
 	if (URMBlueprintFunctionLibrary::IsServer())
 	{
-		if (PlayerArray.IsEmpty())
+		UGameInstance* GameInstance = GWorld->GetGameInstance();
+		auto RMSys = GameInstance->GetSubsystem<URMGameInstanceSubsystem>();
+		if (PlayerArray.Num() == RMSys->MaxPlayer)
 		{
-			return false;
+			return true;
 		}
-		for (auto PlayerState : PlayerArray)
-		{
-			const auto InGamePlayerState = static_cast<AInGamePlayerStateBase*>(PlayerState);
-			if (!InGamePlayerState->IsPlayerStateInit)
-			{
-				return false;
-			}
-		}
-		return true;
 	}
 	return false;
 }

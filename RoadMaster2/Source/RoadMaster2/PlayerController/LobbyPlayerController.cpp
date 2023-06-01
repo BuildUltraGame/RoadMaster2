@@ -29,7 +29,7 @@ void ALobbyPlayerController::OnGameMapIDChange()
 bool ALobbyPlayerController::IsSelfPlayerController(APlayerController* PC)
 {
 	UWorld* World = GWorld;
-	APlayerController* OwnPC = World->GetFirstPlayerController();
+	APlayerController* OwnPC = World->GetGameInstance()->GetFirstLocalPlayerController();
 	return  OwnPC == PC;
 }
 
@@ -37,7 +37,7 @@ void ALobbyPlayerController::SaveNetIDAndIndex()
 {
 	UWorld* World = GWorld;	
 	int32 OwnPlayerID = -1;
-	APlayerController* OwnNativePC = World->GetFirstPlayerController();
+	APlayerController* OwnNativePC = World->GetGameInstance()->GetFirstLocalPlayerController();
 	if (OwnNativePC->PlayerState)
 	{
 		OwnPlayerID = OwnNativePC->PlayerState->GetPlayerId();

@@ -26,8 +26,6 @@ public:
 
 #pragma region Client Player State Variables
 
-	UPROPERTY(Replicated)
-	bool IsPlayerStateInit;
 
 #pragma  endregion Client Player State Variables
 
