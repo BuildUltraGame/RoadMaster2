@@ -14,6 +14,7 @@
 #include "RoadMaster2/Pawns/Units/MovableUnits.h"
 #include "RoadMaster2/PlayerState/InGamePlayerStateBase.h"
 #include "RoadMaster2/SubSystem/RMGameInstanceSubsystem.h"
+#include "RoadMaster2/Tools/RMBlueprintFunctionLibrary.h"
 #include "RoadMaster2/UI/RMCommandUserWidget.h"
 
 
@@ -124,7 +125,7 @@ void AInGamePlayerControllerBase::LoadPCDataFromSubSys()
 
 void AInGamePlayerControllerBase::LoginData_Server_Implementation(int32 PlayerMapIndex)
 {
-	if (GIsServer)
+	if (URMBlueprintFunctionLibrary::IsServer())
 	{
 		PlayerGamePosIndex = PlayerMapIndex;
 		UWorld* World = GWorld;

@@ -7,6 +7,7 @@
 #include "Components/TimelineComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "RoadMaster2/Pawns/Units/MovableUnits.h"
+#include "RoadMaster2/Tools/RMBlueprintFunctionLibrary.h"
 
 ATrack::ATrack()
 {
@@ -83,7 +84,7 @@ void ATrack::RemoveUnitFromTrack(AMovableUnits* unit)
 void ATrack::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	if (GIsServer)
+	if (URMBlueprintFunctionLibrary::IsServer())
 	{
 		float TotalDistance = SplineComponent->GetSplineLength();
 		for (auto MoveState : UnitMoveList)

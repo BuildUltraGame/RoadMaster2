@@ -9,6 +9,7 @@
 #include "RoadMaster2/PlayerController/InGamePlayerControllerBase.h"
 #include "RoadMaster2/PlayerState/InGamePlayerStateBase.h"
 #include "RoadMaster2/SubSystem/RMGameInstanceSubsystem.h"
+#include "RoadMaster2/Tools/RMBlueprintFunctionLibrary.h"
 
 #pragma region base function
 
@@ -55,7 +56,7 @@ void AInBattleGameState::BeginPlay()
 
 void AInBattleGameState::SetInGameSubState(EInGameSubState NewState)
 {
-	if (GIsServer)
+	if (URMBlueprintFunctionLibrary::IsServer())
 	{
 		UE_LOG(LogTemp, Display, TEXT("SetInGameSubState Server--- %d"), NewState);
 		if (InGameSubState != NewState)
@@ -89,7 +90,14 @@ void AInBattleGameState::ExecSubStateChange(EInGameSubState OldValue)
 	{
 		PC->ReportSubStateSetSuccess();
 	}
-	UE_LOG(LogTemp, Display, TEXT("ExecSubStateChange --- %d"), StateStruct.SubState);
+	if(URMBlueprintFunctionLibrary::IsServer())
+	{		
+		UE_LOG(LogTemp, Display, TEXT("ExecSubStateChange Server --- %d"), StateStruct.SubState);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("ExecSubStateChange Client --- %d"), StateStruct.SubState);
+	}
 	//服务器进行倒计时计算
 	StateTimeOutTimerStart();
 }
@@ -102,7 +110,7 @@ void AInBattleGameState::SubStateSetSuccess()
 //阶段倒计时结束
 void AInBattleGameState::SubStateTimeOut()
 {
-	if (GIsServer)
+	if (URMBlueprintFunctionLibrary::IsServer())
 	{
 		//执行最后的操作
 		const auto StateStruct = SubStateMap[InGameSubState];
@@ -118,7 +126,7 @@ void AInBattleGameState::SubStateTimeOut()
 //超时计时器启动 当时间配置为0的时候不启动计时，当时间配置小于0的时候跳过该阶段
 void AInBattleGameState::StateTimeOutTimerStart()
 {
-	if (GIsServer)
+	if (URMBlueprintFunctionLibrary::IsServer())
 	{
 		if (TimerHandle.IsValid())
 		{
@@ -134,7 +142,7 @@ void AInBattleGameState::StateTimeOutTimerStart()
 // 定时check当前阶段是否完成
 void AInBattleGameState::CheckCurrentStateChange()
 {
-	if (GIsServer)
+	if (URMBlueprintFunctionLibrary::IsServer())
 	{
 		//执行最后的操作
 		const auto StateStruct = SubStateMap[InGameSubState];
@@ -165,7 +173,7 @@ void AInBattleGameState::StartConnect(EInGameSubState OldState)
 
 bool AInBattleGameState::CheckConnect()
 {
-	if (GIsServer)
+	if (URMBlueprintFunctionLibrary::IsServer())
 	{
 		UWorld* World = GWorld;
 		auto GameModeInstance = World->GetAuthGameMode();
@@ -213,7 +221,7 @@ void AInBattleGameState::StartInitialize(EInGameSubState OldState)
 
 bool AInBattleGameState::CheckInitialize()
 {
-	if (GIsServer)
+	if (URMBlueprintFunctionLibrary::IsServer())
 	{
 		if (PlayerArray.IsEmpty())
 		{

@@ -5,6 +5,7 @@
 
 #include "RoadMaster2/PlayerController/LobbyPlayerController.h"
 #include "RoadMaster2/SubSystem/RMGameInstanceSubsystem.h"
+#include "RoadMaster2/Tools/RMBlueprintFunctionLibrary.h"
 
 ALobbyGameMode::ALobbyGameMode()
 {
@@ -34,7 +35,7 @@ void ALobbyGameMode::RepRoomInformation(TArray<FPlayerConnectInformation> RoomLi
 void ALobbyGameMode::SaveServerMaxPlayer(int32 MaxPlayers)
 {
 	//服务器储存人数
-	if (GIsServer)
+	if (URMBlueprintFunctionLibrary::IsServer())
 	{
 		UGameInstance* GameInstance = GWorld->GetGameInstance();
 		auto RMSys = GameInstance->GetSubsystem<URMGameInstanceSubsystem>();

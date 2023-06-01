@@ -19,4 +19,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static void GetMapConfigByMapID(int32 MapID);
+
+	UFUNCTION(BlueprintCallable)
+	static bool IsServer();
 };

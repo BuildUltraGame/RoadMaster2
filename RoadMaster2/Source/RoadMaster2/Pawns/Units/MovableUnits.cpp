@@ -7,6 +7,7 @@
 #include "Net/UnrealNetwork.h"
 #include "RoadMaster2/Pawns/LandForm/LandFormPawn.h"
 #include "RoadMaster2/Pawns/Track/Track.h"
+#include "RoadMaster2/Tools/RMBlueprintFunctionLibrary.h"
 
 // Sets default values
 AMovableUnits::AMovableUnits()
@@ -54,7 +55,7 @@ void AMovableUnits::OnCollision(UPrimitiveComponent* OverlappedComp, AActor* Oth
                                 int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//服务器上结算碰撞
-	if (GIsServer)
+	if (URMBlueprintFunctionLibrary::IsServer())
 	{
 		auto EnterLandForm = static_cast<ALandFormPawn*>(Other);
 		if (IsValid(EnterLandForm))

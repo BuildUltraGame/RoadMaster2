@@ -12,3 +12,14 @@ void URMBlueprintFunctionLibrary::GetMapConfigByMapID(int32 MapID)
 {
 	
 }
+
+bool URMBlueprintFunctionLibrary::IsServer()
+{
+	//GIsServer数值不准确！当在editor内的时候他总是为true
+	auto NetMode = GWorld->GetNetMode();
+	if (NetMode != NM_Client)
+	{
+		return true;
+	}
+	return false;
+}

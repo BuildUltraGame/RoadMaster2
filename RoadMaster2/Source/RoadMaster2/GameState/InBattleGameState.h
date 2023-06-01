@@ -140,7 +140,6 @@ public:
 	AInBattleGameState();
 
 	virtual void Tick(float DeltaSeconds) override;
-	
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > &OutLifetimeProps) const override;
 

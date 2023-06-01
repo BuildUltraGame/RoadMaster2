@@ -29,7 +29,7 @@ void AOldVersionRMGameState::StartGamePlay(EInGameSubState OldState)
 	{
 		PlayerController->OpenBattleHUD();
 	}
-	if(GIsServer)
+	if(GWorld->GetNetMode() != NM_Client)
 	{		
 	    UE_LOG(LogTemp, Display, TEXT("OldVersionRMGameState::StartGamePlayServer"));
 	}
