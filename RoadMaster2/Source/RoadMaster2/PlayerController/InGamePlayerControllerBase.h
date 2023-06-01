@@ -125,6 +125,9 @@ public:
 
 	UFUNCTION(BlueprintCallable,Server,Reliable)
 	void LoginData_Server(int32 PlayerMapIndex);
+
+	UFUNCTION(BlueprintCallable,Server,Reliable)
+	void ReportSubStateSetSuccess();
 	
 protected:
 	void OnHotKeyTriggered();

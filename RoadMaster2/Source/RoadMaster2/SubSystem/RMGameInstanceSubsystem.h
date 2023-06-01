@@ -22,5 +22,6 @@ public:
 
 	URMGameInstanceSubsystem();
 
-	
+	UPROPERTY(BlueprintReadWrite)
+	int32 MaxPlayer;
 };

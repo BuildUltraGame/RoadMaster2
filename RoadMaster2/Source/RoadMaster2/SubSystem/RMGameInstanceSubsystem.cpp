@@ -5,4 +5,5 @@
 
 URMGameInstanceSubsystem::URMGameInstanceSubsystem()
 {
+	MaxPlayer = 0;
 }

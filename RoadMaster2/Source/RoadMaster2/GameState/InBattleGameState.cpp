@@ -6,7 +6,9 @@
 #include "Net/UnrealNetwork.h"
 #include "RoadMaster2/Data/UnitInfoBase.h"
 #include "RoadMaster2/GameMode/InGameGameModeBase.h"
+#include "RoadMaster2/PlayerController/InGamePlayerControllerBase.h"
 #include "RoadMaster2/PlayerState/InGamePlayerStateBase.h"
+#include "RoadMaster2/SubSystem/RMGameInstanceSubsystem.h"
 
 #pragma region base function
 
@@ -28,6 +30,7 @@ AInBattleGameState::AInBattleGameState()
 	InGameSubState = EInGameSubState::WaitingForConnect;
 	IsToEndGame = false;
 	InitSubStateArray();
+	StateReportedPlayerAmount = 0;
 	//初始化各个阶段的时间
 	for (const auto& SubState : SubStateMap)
 	{		
@@ -59,6 +62,7 @@ void AInBattleGameState::SetInGameSubState(EInGameSubState NewState)
 		{			
 			auto OldValue = InGameSubState;
 			InGameSubState = NewState;
+			StateReportedPlayerAmount = 0;
 			ExecSubStateChange(OldValue);
 		}
 	}
@@ -78,11 +82,22 @@ void AInBattleGameState::ExecSubStateChange(EInGameSubState OldValue)
 	{
 		StateStruct.StateStartDelegate.Execute(OldValue);
 	}
+	//此处绕道使用playercontroller，是因为gamestate的所有权是server，而client无权调用gamestate的server RPC
+	UGameInstance* GameInstance = GWorld->GetGameInstance();
+	AInGamePlayerControllerBase* PC = static_cast<AInGamePlayerControllerBase*>(GameInstance->GetFirstLocalPlayerController());
+	if (IsValid(PC))
+	{
+		PC->ReportSubStateSetSuccess();
+	}
 	UE_LOG(LogTemp, Display, TEXT("ExecSubStateChange --- %d"), StateStruct.SubState);
 	//服务器进行倒计时计算
 	StateTimeOutTimerStart();
 }
 
+void AInBattleGameState::SubStateSetSuccess()
+{
+	StateReportedPlayerAmount++;
+}
 
 //阶段倒计时结束
 void AInBattleGameState::SubStateTimeOut()
@@ -112,11 +127,7 @@ void AInBattleGameState::StateTimeOutTimerStart()
 		if (TimePerState[InGameSubState] > 0)
 		{
 			GWorld->GetTimerManager().SetTimer(TimerHandle, this, &AInBattleGameState::SubStateTimeOut, TimePerState[InGameSubState], false, TimePerState[InGameSubState]);
-		}
-		if (TimePerState[InGameSubState] < 0)
-		{
-			SubStateTimeOut();
-		}
+		}	
 	}
 }
 
@@ -129,7 +140,9 @@ void AInBattleGameState::CheckCurrentStateChange()
 		const auto StateStruct = SubStateMap[InGameSubState];
 		if (StateStruct.CheckStateEndDelegate.IsBound())
 		{
-			if (StateStruct.CheckStateEndDelegate.Execute())
+			UGameInstance* GameInstance = GWorld->GetGameInstance();
+			auto RMSys = GameInstance->GetSubsystem<URMGameInstanceSubsystem>();
+			if (StateStruct.CheckStateEndDelegate.Execute()&&(RMSys->MaxPlayer == StateReportedPlayerAmount||InGameSubState == EInGameSubState::WaitingForConnect))
 			{			
 				//切换状态
 				if (StateStruct.StateEndDelegate.IsBound())
@@ -157,10 +170,15 @@ bool AInBattleGameState::CheckConnect()
 		UWorld* World = GWorld;
 		auto GameModeInstance = World->GetAuthGameMode();
 		auto InGameModeInstance = static_cast<AInGameGameModeBase*>(GameModeInstance);
-		if (InGameModeInstance->NumTravellingPlayers == 0)
+		if (IsValid(InGameModeInstance))
 		{
-			return true;
-		}
+			UGameInstance* GameInstance = GWorld->GetGameInstance();
+			auto RMSys = GameInstance->GetSubsystem<URMGameInstanceSubsystem>();
+			if (InGameModeInstance->NumPlayers == RMSys->MaxPlayer)
+			{
+				return true;
+			}
+		}		
 	}
 	return false;
 }
@@ -197,6 +215,10 @@ bool AInBattleGameState::CheckInitialize()
 {
 	if (GIsServer)
 	{
+		if (PlayerArray.IsEmpty())
+		{
+			return false;
+		}
 		for (auto PlayerState : PlayerArray)
 		{
 			const auto InGamePlayerState = static_cast<AInGamePlayerStateBase*>(PlayerState);

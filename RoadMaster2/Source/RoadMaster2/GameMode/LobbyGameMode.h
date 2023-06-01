@@ -32,4 +32,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<ALobbyPlayerController*> GetPlayerControllerList();
 	
+	UFUNCTION(BlueprintCallable)
+	void SaveServerMaxPlayer(int32 MaxPlayers);
+	
 };

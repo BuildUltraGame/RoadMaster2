@@ -136,6 +136,15 @@ void AInGamePlayerControllerBase::LoginData_Server_Implementation(int32 PlayerMa
 	}
 }
 
+void AInGamePlayerControllerBase::ReportSubStateSetSuccess_Implementation()
+{	
+	AInBattleGameState* GameState = GWorld->GetGameState<AInBattleGameState>();
+	if (IsValid(GameState))
+	{
+		GameState->SubStateSetSuccess();
+	}
+}
+
 #pragma endregion Initial functions
 
 UGameInstance* AInGamePlayerControllerBase::GetGameInstance()

@@ -18,6 +18,7 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void BeginPlay() override;
 	virtual void InitSubStateArray() override;
+	virtual bool CheckPreArrangement() override;
 	virtual void StartGamePlay(EInGameSubState OldState) override;
 	virtual bool CheckGamePlay() override;
 	virtual void EndGamePlay(bool IsTimeOut) override;

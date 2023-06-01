@@ -4,6 +4,7 @@
 #include "LobbyGameMode.h"
 
 #include "RoadMaster2/PlayerController/LobbyPlayerController.h"
+#include "RoadMaster2/SubSystem/RMGameInstanceSubsystem.h"
 
 ALobbyGameMode::ALobbyGameMode()
 {
@@ -12,7 +13,8 @@ ALobbyGameMode::ALobbyGameMode()
 
 void ALobbyGameMode::RepRoomInformation(TArray<FPlayerConnectInformation> RoomList,int32 MapID)
 {
-	UWorld* World = GWorld;	
+	UWorld* World = GWorld;
+	int32 index = 0;
 	for (TArray<TWeakObjectPtr<APlayerController> >::TConstIterator PCIterator = World->GetPlayerControllerIterator(); PCIterator; ++PCIterator)
 	{
 		ALobbyPlayerController* PC = static_cast<ALobbyPlayerController*>(PCIterator->Get());
@@ -21,7 +23,22 @@ void ALobbyGameMode::RepRoomInformation(TArray<FPlayerConnectInformation> RoomLi
 		{
 			PC->RoomPlayerList = RoomList;
 			PC->GameMapID = MapID;
+			index++;
 		}
+	}
+	//记录最大人数
+	SaveServerMaxPlayer(index);
+}
+
+
+void ALobbyGameMode::SaveServerMaxPlayer(int32 MaxPlayers)
+{
+	//服务器储存人数
+	if (GIsServer)
+	{
+		UGameInstance* GameInstance = GWorld->GetGameInstance();
+		auto RMSys = GameInstance->GetSubsystem<URMGameInstanceSubsystem>();
+		RMSys->MaxPlayer = MaxPlayers;
 	}
 }
 

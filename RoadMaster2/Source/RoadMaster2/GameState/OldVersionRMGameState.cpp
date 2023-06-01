@@ -23,11 +23,19 @@ void AOldVersionRMGameState::InitSubStateArray()
 void AOldVersionRMGameState::StartGamePlay(EInGameSubState OldState)
 {
 	IsToEndGame = false;
-	UWorld* World = GWorld;
-	auto PlayerController = static_cast<AInGamePlayerControllerBase*>(World->GetFirstPlayerController());
+	UGameInstance* GameInstance = GWorld->GetGameInstance();
+	auto PlayerController = static_cast<AInGamePlayerControllerBase*>(GameInstance->GetFirstLocalPlayerController());
 	if (IsValid(PlayerController))
 	{
 		PlayerController->OpenBattleHUD();
+	}
+	if(GIsServer)
+	{		
+	    UE_LOG(LogTemp, Display, TEXT("OldVersionRMGameState::StartGamePlayServer"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("OldVersionRMGameState::StartGamePlayClient"));
 	}
 }
 
@@ -39,6 +47,11 @@ bool AOldVersionRMGameState::CheckGamePlay()
 void AOldVersionRMGameState::EndGamePlay(bool IsTimeOut)
 {
 	Super::EndGamePlay(IsTimeOut);
+}
+
+bool AOldVersionRMGameState::CheckPreArrangement()
+{
+	return true;
 }
 
 EInGameSubState AOldVersionRMGameState::GetNextState(EInGameSubState CurState)

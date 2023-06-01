@@ -93,14 +93,22 @@ public:
 	void ExecSubStateChange(EInGameSubState OldValue);
 
 	UFUNCTION(BlueprintCallable)
-	void SetInGameSubState(EInGameSubState NewState);	
+	void SetInGameSubState(EInGameSubState NewState);
 
+	//汇报状态切换完成
+	UFUNCTION(BlueprintCallable)
+	void SubStateSetSuccess();
+
+	//已经汇报的玩家数量
+	UPROPERTY()
+	int32 StateReportedPlayerAmount;
+	
 	//每个状态的进入和判定函数
 	UPROPERTY()
 	TMap<EInGameSubState,FSubStateWithDelegate> SubStateMap;
 	
 
-#pragma region >>> Game Base Variables //Check 方法只在服务器执行，start和end方法在每一个端执行
+#pragma region >>> Game Base Variables 
 
 	//用以配置当前关卡出场单位
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
@@ -144,7 +152,7 @@ protected:
 	//记录了各个SubState的arr，包括其检查方式和回调
 	virtual void InitSubStateArray();
 
-#pragma region <<<Delegates For State Changing
+#pragma region <<<Delegates For State Changing //Check 方法只在服务器执行，start和end方法在每一个端执行
 
 	//连接阶段的操作
 	UFUNCTION()
