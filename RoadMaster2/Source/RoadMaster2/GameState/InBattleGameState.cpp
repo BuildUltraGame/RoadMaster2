@@ -30,8 +30,14 @@ AInBattleGameState::AInBattleGameState()
 {	
 	InGameSubState = EInGameSubState::WaitingForConnect;
 	IsToEndGame = false;
-	InitSubStateArray();
 	StateReportedPlayerAmount = 0;
+}
+
+void AInBattleGameState::BeginPlay()
+{
+	Super::BeginPlay();
+	//构造函数中执行bindufunction时机太早了,绑定对象this指针会被选择为CDO
+	InitSubStateArray();
 	//初始化各个阶段的时间
 	for (const auto& SubState : SubStateMap)
 	{		
@@ -40,13 +46,8 @@ AInBattleGameState::AInBattleGameState()
 			TimePerState.Add(SubState.Value.SubState,0);			
 		}
 	}
-	SetActorTickEnabled(true);
-}
-
-void AInBattleGameState::BeginPlay()
-{
-	Super::BeginPlay();
 	MinNetUpdateFrequency = 0.001f;
+	SetActorTickEnabled(true);
 }
 
 #pragma endregion
