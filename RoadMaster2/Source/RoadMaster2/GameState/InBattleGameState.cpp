@@ -37,6 +37,7 @@ void AInBattleGameState::BeginPlay()
 {
 	Super::BeginPlay();
 	//构造函数中执行bindufunction时机太早了,绑定对象this指针会被选择为CDO
+	///有趣的是，在编辑器启动时，C++ CLASS 会给每一个类生成一个CDO ，而蓝图的CDO则在运行中被生成，推测为加载时，实际上这些CDO都不是被使用的.
 	InitSubStateArray();
 	//初始化各个阶段的时间
 	for (const auto& SubState : SubStateMap)
